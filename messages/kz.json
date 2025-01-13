@@ -1,4 +1,9 @@
 {
+    "mainlink": "басты бетке",
+    "meta": {
+        "title": "Билет сатып алу",
+        "description": "Елимай ФК билетін сатып алу"
+    },
     "HomePage": {
         "title": "Hello world KZ!",
         "about": "Go to the about page"

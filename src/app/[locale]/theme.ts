@@ -1,5 +1,13 @@
 import { createTheme } from "@mantine/core";
 export const theme = createTheme({
+    breakpoints: {
+        xs: '18.125em',
+        sm: '21.875em',
+        md: '37.5em',
+        lg: '56.25em',
+        xl: '75em',
+    },
+
     colors: {
         slate: [
             "#f8fafc",
@@ -288,4 +296,5 @@ export const theme = createTheme({
             "#4c0519",
         ],
     },
+    fontFamily: 'Nunito, sans-serif',
 });
