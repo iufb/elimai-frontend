@@ -62,7 +62,7 @@ export default async function RootLayout({ params, children }: { params: { local
                                 borderBottom: '1px solid var(--mantine-color-slate-3)'
                             }}
                             >
-                                <Flex maw={1200} mx={'auto'} h={70} align={'center'}  >
+                                <Flex px={{ xs: 10, xl: 0 }} maw={1200} mx={'auto'} h={70} align={'center'}  >
                                     <Link href={'https://fcelimai.kz/'}>
                                         <Text fw={'bold'} c={'slate.9'} size="lg">
                                             {t('mainlink')}
@@ -76,7 +76,7 @@ export default async function RootLayout({ params, children }: { params: { local
                             <Box maw={1200} mx={'auto'}>
                                 <Links />
                                 <Link href={'/policy'}>
-                                    <Text className={'policy'} fw={'bold'} fz={'lg'}>
+                                    <Text px={{ xs: 10, xl: 0 }} className={'policy'} fw={'bold'} fz={'lg'}>
                                         {t('policy')}
                                     </Text>
                                 </Link>
@@ -102,7 +102,7 @@ const links =
     ]
 
 const Links = () => {
-    return <Flex gap={10} justify={'center'} align={'center'} py={40} >
+    return <Flex wrap={'wrap'} gap={10} justify={'center'} align={'center'} py={40} >
         {links.map(link =>
             <Center pos={'relative'} w={120} h={120} key={link.href} style={{
                 border: '1px solid var(--mantine-color-gray-3)',

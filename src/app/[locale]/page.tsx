@@ -1,3 +1,4 @@
+import { GamesTable } from '@/widgets';
 import { BackgroundImage, Box, Stack, Text, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 
@@ -20,6 +21,7 @@ export default async function HomePage() {
                 <Title order={1} c='white'>{t('hero.title')}</Title>
             </Stack>
         </BackgroundImage>
+        <GamesTable />
     </Box>
     );
 }

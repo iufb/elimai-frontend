@@ -1,4 +1,7 @@
-import { createTheme } from "@mantine/core";
+'use client'
+
+import { Button, createTheme, Input } from "@mantine/core";
+import classes from "./theme.module.css";
 export const theme = createTheme({
     breakpoints: {
         xs: '18.125em',
@@ -7,8 +10,25 @@ export const theme = createTheme({
         lg: '56.25em',
         xl: '75em',
     },
-
+    components: {
+        Button: Button.extend({
+            classNames: {
+                root: classes.button,
+            },
+        }),
+        Input: Input.extend({
+            classNames: {
+                input: classes.input,
+            },
+        }),
+    },
     colors: {
+        elimai:
+            [
+                '#0BBA8E', '#08A980', '#079B73', '#068E66', '#057E58',
+                '#046748', '#047553', '#046B4E', '#045F4A', '#003F3C'
+            ]
+        ,
         slate: [
             "#f8fafc",
             "#f1f5f9",
