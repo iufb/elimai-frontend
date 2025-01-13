@@ -77,7 +77,7 @@ export default async function RootLayout({ params, children }: { params: { local
                                 <Links />
                                 <Link href={'/policy'}>
                                     <Text px={{ xs: 10, xl: 0 }} className={'policy'} fw={'bold'} fz={'lg'}>
-                                        {t('policy')}
+                                        {t('policy.title')}
                                     </Text>
                                 </Link>
                             </Box>
