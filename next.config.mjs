@@ -1,10 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  experimental: {
-    optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
-  },
-};
+import createNextIntlPlugin from 'next-intl/plugin';
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default withNextIntl(nextConfig);
