@@ -1,5 +1,5 @@
 'use client'
-import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
+import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import Image from 'next/image';
 import { ReactNode } from 'react';
@@ -9,8 +9,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
     return (
         <AppShell
-            header={{ height: 60 }}
-            navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+            header={{ height: 80 }}
             padding="md"
         >
             <AppShell.Header>
@@ -19,14 +18,6 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                     <Image src='/logonew.png' width={60} height={60} alt='e-logo' />
                 </Group>
             </AppShell.Header>
-            <AppShell.Navbar p="md">
-                Navbar
-                {Array(15)
-                    .fill(0)
-                    .map((_, index) => (
-                        <Skeleton key={index} h={28} mt="sm" animate={false} />
-                    ))}
-            </AppShell.Navbar>
             <AppShell.Main>{children}</AppShell.Main>
         </AppShell>
     );

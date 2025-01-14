@@ -61,18 +61,21 @@ export const GamesTable = () => {
     return (
         <Stack align="center" my={20} >
             <Title order={2}>Матчи</Title>
-            <Table maw={600} fz={{
-                xs: 14, md: 16, lg: 18
-            }} >
-                <Table.Thead >
-                    <Table.Tr>
-                        <Table.Th ta={'center'}>{t('date')}</Table.Th>
-                        <Table.Th ta={'center'}>{t('game')}</Table.Th>
-                        <Table.Th ta={'center'}>{t('buy')}</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{rows}</Table.Tbody>
-            </Table>
+            <Table.ScrollContainer mx={'auto'} maw={1200} minWidth={500} w={'100%'}>
+                <Table striped stripedColor="slate.2" withTableBorder fz={{
+                    xs: 14, md: 16, lg: 18
+                }} >
+                    <Table.Thead >
+                        <Table.Tr>
+                            <Table.Th ta={'center'}>{t('date')}</Table.Th>
+                            <Table.Th ta={'center'}>{t('game')}</Table.Th>
+                            <Table.Th ta={'center'}>{t('buy')}</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{rows}</Table.Tbody>
+                    <Table.Caption>{t('caption')}</Table.Caption>
+                </Table>
+            </Table.ScrollContainer>
         </Stack>
     );
 }

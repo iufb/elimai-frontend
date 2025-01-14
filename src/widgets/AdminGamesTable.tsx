@@ -44,22 +44,24 @@ export const AdminGamesTable = () => {
     return (
         <Stack align="center" my={20} >
             <Title order={2}>Матчи</Title>
-            <Table miw={390} fz={{
-                xs: 14, md: 16, lg: 18
-            }}>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th ta={'center'}>Дата</Table.Th>
-                        <Table.Th ta={'center'}>Матч RU</Table.Th>
-                        <Table.Th ta={'center'}>Матч KZ</Table.Th>
-                        <Table.Th ta={'center'}>Статус</Table.Th>
-                        <Table.Th ta={'center'}>Изменить</Table.Th>
-                        <Table.Th ta={'center'}>Удалить</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{rows}</Table.Tbody>
+            <Table.ScrollContainer minWidth={500} w={'100%'}>
+                <Table miw={390} fz={{
+                    xs: 14, md: 16, lg: 18
+                }}>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th ta={'center'}>Дата</Table.Th>
+                            <Table.Th ta={'center'}>Матч RU</Table.Th>
+                            <Table.Th ta={'center'}>Матч KZ</Table.Th>
+                            <Table.Th ta={'center'}>Статус</Table.Th>
+                            <Table.Th ta={'center'}>Изменить</Table.Th>
+                            <Table.Th ta={'center'}>Удалить</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{rows}</Table.Tbody>
 
-            </Table>
+                </Table>
+            </Table.ScrollContainer>
         </Stack>
     );
 }

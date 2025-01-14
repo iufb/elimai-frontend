@@ -3,13 +3,13 @@
 import { Button, createTheme, Input } from "@mantine/core";
 import classes from "./theme.module.css";
 export const theme = createTheme({
-    // breakpoints: {
-    //     xs: '18.125em',
-    //     sm: '21.875em',
-    //     md: '37.5em',
-    //     lg: '56.25em',
-    //     xl: '75em',
-    // },
+    breakpoints: {
+        xs: '18.125em',
+        sm: '21.875em',
+        md: '37.5em',
+        lg: '56.25em',
+        xl: '75em',
+    },
     components: {
         Button: Button.extend({
             classNames: {
