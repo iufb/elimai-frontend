@@ -2,7 +2,6 @@
 import { theme } from "@/app/theme";
 import { Link, routing } from "@/i18n/routing";
 import { HeaderLink } from "@/shared";
-import { Providers } from "@/shared/Providers";
 import {
     Box,
     Center,
@@ -68,9 +67,7 @@ export default async function RootLayout({ params, children }: { params: { local
                             </Box>
                         </nav>
                         <main className="main">
-                            <Providers>
-                                {children}
-                            </Providers>
+                            {children}
                             <Box maw={1200} mx={'auto'}>
                                 <Links />
                                 <Link href={'/policy'}>
