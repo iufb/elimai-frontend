@@ -2,6 +2,8 @@ import "@mantine/core/styles.css";
 
 
 import { Link, routing } from "@/i18n/routing";
+import { HeaderLink } from "@/shared";
+import { Providers } from "@/shared/Providers";
 import {
     Box,
     Center,
@@ -14,6 +16,7 @@ import {
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { Nunito } from 'next/font/google';
+import { headers } from "next/headers";
 import Image from "next/image";
 import { notFound } from 'next/navigation';
 import "./globals.css";
@@ -38,6 +41,14 @@ export default async function RootLayout({ params, children }: { params: { local
     if (!routing.locales.includes(locale as any)) {
         notFound();
     }
+
+    const headersList = await headers();
+
+    // Get the full URL from the headers
+    const fullUrl = headersList.get('referer'); // Or use another header like 'host'
+
+    // Extract the pathname
+    const pathname = fullUrl ? new URL(fullUrl).pathname : '/';
     const messages = await getMessages();
     const t = await getTranslations()
     return (
@@ -63,16 +74,14 @@ export default async function RootLayout({ params, children }: { params: { local
                             }}
                             >
                                 <Flex px={{ xs: 10, xl: 0 }} maw={1200} mx={'auto'} h={70} align={'center'}  >
-                                    <Link href={'https://fcelimai.kz/'}>
-                                        <Text fw={'bold'} c={'slate.9'} size="lg">
-                                            {t('mainlink')}
-                                        </Text>
-                                    </Link>
+                                    <HeaderLink />
                                 </Flex>
                             </Box>
                         </nav>
                         <main className="main">
-                            {children}
+                            <Providers>
+                                {children}
+                            </Providers>
                             <Box maw={1200} mx={'auto'}>
                                 <Links />
                                 <Link href={'/policy'}>

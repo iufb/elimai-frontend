@@ -1,6 +1,6 @@
 import { BackgroundImage, Box, Stack, Text, Title } from "@mantine/core";
 import { getTranslations } from "next-intl/server";
-
+import styles from './page.module.css';
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale } = await params
     const t = await getTranslations();
@@ -20,7 +20,7 @@ export default async function Page() {
                 <Title order={1} c='white'>{t('policy.title')}</Title>
             </Stack>
         </BackgroundImage>
-        <Text my={20} mx={'auto'} maw={800} ta={'center'}>{t('policy.value', { url: "https://tickets.fcelimai.kz/" })}</Text>
+        <Text my={20} mx={'auto'} maw={800} ta={'center'}>{t.rich('policy.value', { a: (chunk) => <a className={styles.link} href="https://tickets.fcelimai.kz/">{chunk}</a> })}</Text>
     </Box>
     );
 }
