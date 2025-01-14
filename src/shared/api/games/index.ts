@@ -1,5 +1,5 @@
 import { customFetch } from "@/shared/api";
-import { Game, GameDTO } from "@/shared/types";
+import { Game, GameDTO } from "@/shared/consts";
 
 export const rAddGame = (body: GameDTO) => {
     return customFetch({ method: "POST", path: "events/", body: { json: body } });

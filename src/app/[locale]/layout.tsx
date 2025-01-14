@@ -1,4 +1,3 @@
-
 import { theme } from "@/app/theme";
 import { Link, routing } from "@/i18n/routing";
 import { HeaderLink } from "@/shared";
@@ -76,7 +75,6 @@ export default async function RootLayout({ params, children }: { params: { local
                                     </Text>
                                 </Link>
                             </Box>
-
                         </main>
                         <footer>
                             <Text py={10} fz={14} ta={'center'} c={'gray.4'}>© {new Date().getFullYear()} {t('footer')}</Text>

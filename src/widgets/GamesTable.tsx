@@ -1,7 +1,11 @@
 'use client'
-import { Button, Stack, Table, Title } from "@mantine/core";
+import { rGetGames } from "@/shared/api/games";
+import { GameStatus } from "@/shared/consts";
+import { Box, Button, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import jsPDF from "jspdf";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { useQuery } from "react-query";
 
 const elements = [
     { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
@@ -11,8 +15,21 @@ const elements = [
     { position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium' },
 ];
 export const GamesTable = () => {
+    const { data: games, isLoading, isError } = useQuery({
+        queryKey: ['games'], queryFn: async () => {
+            const data = await rGetGames()
+            return data
+        }
+    })
+    const { locale } = useParams()
 
     const t = useTranslations('gamesTable')
+
+    if (isLoading) {
+        return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
+    }
+    if (!games) { return <Title c={'red.5'} order={3}>Ошибка загрузки</Title> }
+
     const createPDF = () => {
         const doc = new jsPDF({
             orientation: 'landscape'
@@ -31,12 +48,12 @@ export const GamesTable = () => {
         };
         img.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQvHik8qKAB20CDxw5SH-e7iyOTK4VJeWEioNXlkXkeXYaJ3ao_sBFT_4Eso2Vb3qBU6H_OOA1ggK46iLIQ39idWxsRYiQlBqgKMUzRsMhlQ'; // Replace with the image URL    }
     }
-    const rows = elements.map((element, idx) => (
-        <Table.Tr key={element.name}>
-            <Table.Td ta={'center'}>{element.position}</Table.Td>
-            <Table.Td ta={'center'}>{element.name}</Table.Td>
+    const rows = games.map((element, idx) => (
+        <Table.Tr key={element.id}>
+            <Table.Td ta={'center'}>{element.event_date as string}</Table.Td>
+            <Table.Td ta={'center'}>{element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
             <Table.Td ta={'center'}>
-                <Button variant='base' disabled={idx > 1} onClick={createPDF}>{t('btn')}</Button>
+                <Button variant='base' disabled={element.status == GameStatus[0]} onClick={createPDF}>{t('btn')}</Button>
             </Table.Td>
         </Table.Tr>
     ));

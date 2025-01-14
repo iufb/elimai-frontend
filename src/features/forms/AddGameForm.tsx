@@ -1,7 +1,8 @@
 'use client'
 import { rAddGame } from "@/shared/api/games";
+import { GameDTO, GameStatus, notificationErrors, notificationSuccess } from "@/shared/consts";
+import { showErrorNotification, showSuccessNotification } from "@/shared/notifications";
 import { queryClient } from "@/shared/Providers";
-import { GameDTO, GameStatus } from "@/shared/types";
 import { Button, Select, Stack, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import dayjs from "dayjs";
@@ -21,8 +22,14 @@ export const AddGameForm = ({ close }: { close: () => void }) => {
         mutationFn: rAddGame,
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['games'] })
+            showSuccessNotification(notificationSuccess.create);
             close()
         },
+        onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.create)
+
+        }
     });
     const onSubmit: SubmitHandler<GameDTO> = (data) => {
         console.log(data)
@@ -79,7 +86,7 @@ export const AddGameForm = ({ close }: { close: () => void }) => {
                 }
             />
 
-            <Button variant="base" disabled={isLoading} type="submit" >Добавить</Button>
+            <Button loading={isLoading} variant="base" disabled={isLoading} type="submit" >Добавить</Button>
         </Stack>
     </form >
 }

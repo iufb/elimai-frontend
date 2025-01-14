@@ -6,20 +6,16 @@ import { ReactNode } from 'react';
 
 export function AdminLayout({ children }: { children: ReactNode }) {
     const [opened, { toggle }] = useDisclosure();
+
     return (
         <AppShell
-            header={{ height: 80 }}
-            navbar={{
-                width: { base: 200, md: 250, lg: 400 },
-                breakpoint: 'md',
-                collapsed: { mobile: !opened },
-            }}
+            header={{ height: 60 }}
+            navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
             padding="md"
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-
                     <Image src='/logonew.png' width={60} height={60} alt='e-logo' />
                 </Group>
             </AppShell.Header>

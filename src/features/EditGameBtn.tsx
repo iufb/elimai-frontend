@@ -1,6 +1,6 @@
 'use client'
 import { EditGameForm } from "@/features/forms";
-import { Game } from "@/shared/types";
+import { Game } from "@/shared/consts";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Edit } from "lucide-react";

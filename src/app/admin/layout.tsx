@@ -1,6 +1,7 @@
 
 import { theme } from "@/app/theme"
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from "@mantine/core"
+import { Notifications } from "@mantine/notifications"
 
 export const metadata = {
     title: 'Админ',
@@ -22,7 +23,10 @@ export default function RootLayout({
                 />
             </head>
 
-            <body><MantineProvider theme={theme}>{children}</MantineProvider></body>
+            <body><MantineProvider theme={theme}>
+
+                <Notifications />
+                {children}</MantineProvider></body>
         </html>
     )
 }
