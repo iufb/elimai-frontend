@@ -3,12 +3,12 @@ import { DatesProvider } from "@mantine/dates";
 import 'dayjs/locale/ru';
 import { ReactNode, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-
+export const queryClient = new QueryClient()
 const QueryProvider = ({ children }: { children: React.ReactNode }) => {
-    const [queryClient] = useState(() => new QueryClient());
+    const [client] = useState(() => queryClient);
 
     return (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
     );
 }
 

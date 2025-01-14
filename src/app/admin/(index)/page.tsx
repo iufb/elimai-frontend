@@ -1,8 +1,10 @@
 import { AddGameBtn } from "@/features";
+import { AdminGamesTable } from "@/widgets";
 import { Stack } from "@mantine/core";
 
 export default function Page() {
-    return <Stack align="start">
+    return <Stack >
         <AddGameBtn />
+        <AdminGamesTable />
     </Stack>
 }

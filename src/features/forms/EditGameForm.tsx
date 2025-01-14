@@ -1,30 +1,30 @@
 'use client'
-import { rAddGame } from "@/shared/api/games";
+import { rEditGame } from "@/shared/api/games";
 import { queryClient } from "@/shared/Providers";
-import { GameDTO, GameStatus } from "@/shared/types";
+import { Game, GameStatus } from "@/shared/types";
 import { Button, Select, Stack, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 
-export const AddGameForm = ({ close }: { close: () => void }) => {
+export const EditGameForm = ({ game, close }: { game: Game, close: () => void }) => {
     const {
         handleSubmit,
         register,
         getValues,
         control,
         formState: { errors },
-    } = useForm<GameDTO>();
+    } = useForm<Game>({ defaultValues: game });
     const { mutate, isLoading, isError } = useMutation({
-        mutationKey: ["addGame"],
-        mutationFn: rAddGame,
+        mutationKey: ["editGame"],
+        mutationFn: rEditGame,
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['games'] })
             close()
         },
     });
-    const onSubmit: SubmitHandler<GameDTO> = (data) => {
+    const onSubmit: SubmitHandler<Game> = (data) => {
         console.log(data)
         mutate({ ...data, event_date: dayjs(data.event_date).format("YYYY-MM-DD") })
     };
@@ -56,7 +56,7 @@ export const AddGameForm = ({ close }: { close: () => void }) => {
                         w={150}
                         label="Дата"
                         placeholder="Выберите дату"
-                        value={value as Date}
+                        value={dayjs(value).toDate()}
                         onChange={onChange}
                     />
 
@@ -79,7 +79,7 @@ export const AddGameForm = ({ close }: { close: () => void }) => {
                 }
             />
 
-            <Button variant="base" disabled={isLoading} type="submit" >Добавить</Button>
+            <Button variant="base" disabled={isLoading} type="submit" >Изменить</Button>
         </Stack>
     </form >
 }
