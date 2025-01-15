@@ -1,8 +1,7 @@
 import { BackgroundImage, Box, Stack, Text, Title } from "@mantine/core";
 import { getTranslations } from "next-intl/server";
 import styles from './page.module.css';
-export async function generateMetadata({ params }: { params: { locale: string } }) {
-    const { locale } = await params
+export async function generateMetadata() {
     const t = await getTranslations();
     return {
         title: t('policy.title'),
@@ -11,7 +10,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export default async function Page() {
-
     const t = await getTranslations();
     return (<Box>
         <BackgroundImage pos={'relative'} w={'100%'} h={'30vh'} src='/policy.jpg' >
