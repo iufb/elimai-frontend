@@ -1,6 +1,8 @@
 "use client";
 
 import { rLogin } from "@/shared/api/auth";
+import { notificationErrors } from "@/shared/consts";
+import { showErrorNotification } from "@/shared/notifications";
 import { Button, Stack, TextInput, Title } from "@mantine/core";
 import { deleteCookie } from "cookies-next";
 import { setCookie } from "cookies-next/client";
@@ -17,6 +19,10 @@ export const LoginForm = () => {
             setCookie('token', data.token, { maxAge: 60 * 60 })
             router.replace('/admin')
         },
+        onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.login);
+        }
     });
 
     const onSubmit = (data: { username: string; password: string }) => {
