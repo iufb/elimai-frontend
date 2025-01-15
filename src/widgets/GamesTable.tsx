@@ -54,7 +54,7 @@ export const GamesTable = () => {
             <Table.Td ta={'center'}>{element.event_date as string}</Table.Td>
             <Table.Td ta={'center'}>{element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
             <Table.Td ta={'center'}>
-                <BuyTicketBtn gameId={element.id} disabled={element.status == GameStatus[0]} />
+                <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
             </Table.Td>
         </Table.Tr>
     ));
