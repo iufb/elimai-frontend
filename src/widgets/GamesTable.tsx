@@ -29,7 +29,7 @@ export const GamesTable = () => {
     if (isLoading) {
         return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
-    if (!games) { return <Title c={'red.5'} order={3}>Ошибка загрузки</Title> }
+    if (!games) { return <Title ta={'center'} my={100} c={'red.5'} order={3}>Ошибка загрузки...</Title> }
 
     const createPDF = () => {
         const doc = new jsPDF({
