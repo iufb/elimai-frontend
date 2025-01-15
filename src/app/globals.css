@@ -1,0 +1,27 @@
+button {
+    all: unset;
+    /* Resets all inherited and default styles */
+    display: inline-block;
+    /* You can add this to maintain block-level or inline-block layout */
+    cursor: pointer;
+    /* Ensures the button still looks interactive if needed */
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.main {
+    min-height: calc(100vh - 115px);
+}
+
+.policy {
+
+    color: var(--mantine-color-gray-4);
+    transition: color .2s ease-in-out;
+
+    &:hover {
+        color: var(--mantine-color-gray-6);
+    }
+}
