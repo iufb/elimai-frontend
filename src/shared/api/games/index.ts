@@ -16,6 +16,11 @@ export const rGetGames = (): Promise<Game[]> => {
     return customFetch({ method: "GET", path: "get-events" });
 };
 
+export const rBuyTicket = (body: any): Promise<any> => {
+    return customFetch({ method: "POST", path: "create-ticket/", body: { json: body } });
+};
+
+
 
 
 

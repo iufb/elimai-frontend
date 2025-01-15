@@ -1,6 +1,7 @@
 import { theme } from "@/app/theme";
 import { Link, routing } from "@/i18n/routing";
 import { HeaderLink } from "@/shared";
+import { LocaleSwitcher } from "@/widgets";
 import {
     Box,
     Center,
@@ -60,8 +61,9 @@ export default async function RootLayout({ params, children }: { params: { local
                                 borderBottom: '1px solid var(--mantine-color-slate-3)'
                             }}
                             >
-                                <Flex px={{ xs: 10, xl: 0 }} maw={1200} mx={'auto'} h={70} align={'center'}  >
+                                <Flex px={{ xs: 10, xl: 0 }} maw={1200} mx={'auto'} h={70} align={'center'} justify={'space-between'}  >
                                     <HeaderLink />
+                                    <LocaleSwitcher />
                                 </Flex>
                             </Box>
                         </nav>

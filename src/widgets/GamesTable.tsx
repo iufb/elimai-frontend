@@ -1,7 +1,8 @@
 'use client'
+import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
 import { GameStatus } from "@/shared/consts";
-import { Box, Button, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import jsPDF from "jspdf";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -53,7 +54,7 @@ export const GamesTable = () => {
             <Table.Td ta={'center'}>{element.event_date as string}</Table.Td>
             <Table.Td ta={'center'}>{element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
             <Table.Td ta={'center'}>
-                <Button variant='base' disabled={element.status == GameStatus[0]} onClick={createPDF}>{t('btn')}</Button>
+                <BuyTicketBtn gameId={element.id} disabled={element.status == GameStatus[0]} />
             </Table.Td>
         </Table.Tr>
     ));
