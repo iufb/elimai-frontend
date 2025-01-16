@@ -1,12 +1,11 @@
 'use client'
-import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
-import { GameStatus } from "@/shared/consts";
-import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { Box, Button, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import jsPDF from "jspdf";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import QRCode from 'qrcode';
 import { useQuery } from "react-query";
 
 const elements = [
@@ -32,30 +31,48 @@ export const GamesTable = () => {
     }
     if (!games) { return <Title ta={'center'} my={100} c={'red.5'} order={3}>Ошибка загрузки...</Title> }
 
+
     const createPDF = () => {
-        const doc = new jsPDF({
-            orientation: 'landscape'
+        const doc = new jsPDF(); // Default is 'portrait', 'px' unit
+        const qrImage = new Image();
+        const templateImage = new Image();
+
+        QRCode.toDataURL("Hello", function (err, url) {
+            if (err) {
+                console.error("Error generating QR code:", err);
+                return;
+            }
+            qrImage.src = url; // Set QR code image source
         });
-        const img = new Image();
-        img.onload = function () {
-            // Add image to PDF
-            doc.addImage(img, 'PNG', 10, 10, 300, 150); // x, y, width, height
 
-            // Add some text
-            doc.setFontSize(18);
-            doc.text('This is a dynamic PDF with an image!', 10, 10);
+        templateImage.onload = function () {
+            // Get page dimensions
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
 
-            // Save PDF
+            // Add the template image, scaled to fill the entire page
+            doc.addImage(templateImage, 'JPEG', 0, 0, pageWidth, pageHeight);
+            doc.setTextColor('red')
+            doc.text("Your Ticket", pageWidth / 2, 40, { align: "center", });
+            doc.setTextColor('green')
+            doc.text("GREEN Your Ticket", pageWidth / 2, 40, { align: "center", });
+
+            // doc.addImage(qrImage, 'PNG', pageWidth - 60 - 10, pageHeight - 60 - 10, 60, 60); // Bottom-right corner
+
+            // Save the PDF
             doc.save('generated-pdf.pdf');
         };
-        img.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQvHik8qKAB20CDxw5SH-e7iyOTK4VJeWEioNXlkXkeXYaJ3ao_sBFT_4Eso2Vb3qBU6H_OOA1ggK46iLIQ39idWxsRYiQlBqgKMUzRsMhlQ'; // Replace with the image URL    }
-    }
+
+        templateImage.src = '/ticket-template.jpeg'; // Path to the template image
+    };
+
     const rows = games.map((element, idx) => (
         <Table.Tr key={element.id}>
             <Table.Td ta={'center'}>{dayjs(element.event_date).locale(locale as string).format("DD-MM-YYYY HH:mm")}</Table.Td>
             <Table.Td ta={'center'}>{element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
             <Table.Td ta={'center'}>
-                <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
+                <Button onClick={createPDF}>pdf</Button>
+                {/* <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} /> */}
             </Table.Td>
         </Table.Tr>
     ));
