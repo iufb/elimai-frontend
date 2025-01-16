@@ -23,6 +23,7 @@ function authMiddleware(req: NextRequest) {
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
+    console.log(req.referrer)
     // Skip the locale middleware for admin routes
     if (pathname.startsWith("/admin") || pathname.startsWith("/admin/login")) {
         return authMiddleware(req);

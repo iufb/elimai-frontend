@@ -33,7 +33,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     });
     const onSubmit: SubmitHandler<{ tel: string, email: string }> = (data) => {
         console.log(data)
-        mutate({ TELEPHONE: data.tel, EMAIL: data.email ? data.email : " ", EVENT_ID: gameId })
+        mutate({ TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: data.email ? data.email : " ", EVENT_ID: gameId })
 
     };
     return <form onSubmit={handleSubmit(onSubmit)}>
