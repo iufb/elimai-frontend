@@ -4,7 +4,7 @@ import { Game, GameStatus, notificationErrors, notificationSuccess } from "@/sha
 import { showErrorNotification, showSuccessNotification } from "@/shared/notifications";
 import { queryClient } from "@/shared/Providers";
 import { Button, Select, Stack, TextInput } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateTimePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
@@ -33,7 +33,8 @@ export const EditGameForm = ({ game, close }: { game: Game, close: () => void })
     });
     const onSubmit: SubmitHandler<Game> = (data) => {
         console.log(data)
-        mutate({ ...data, event_date: dayjs(data.event_date).format("YYYY-MM-DD") })
+        console.log(dayjs(data.event_date).format("YYYY-MM-DD HH:mm:ss"))
+        mutate({ ...data, event_date: dayjs(data.event_date).format("YYYY-MM-DD HH:mm:ss") })
     };
 
 
@@ -57,7 +58,7 @@ export const EditGameForm = ({ game, close }: { game: Game, close: () => void })
                 name="event_date"
                 rules={{ required: "Обязательное поле" }}
                 render={({ field: { value, onChange } }) =>
-                    <DatePickerInput
+                    <DateTimePicker
                         error={errors["event_date"]?.message}
                         lang="RU"
                         w={150}

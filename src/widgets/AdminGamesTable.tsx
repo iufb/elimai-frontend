@@ -2,6 +2,9 @@
 import { DeleteGameBtn, EditGameBtn } from "@/features";
 import { rGetGames } from "@/shared/api/games";
 import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { deleteCookie } from "cookies-next";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 
 const elements = [
@@ -12,10 +15,18 @@ const elements = [
     { position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium' },
 ];
 export const AdminGamesTable = () => {
+    const router = useRouter()
     const { data: games, isLoading, isError } = useQuery({
         queryKey: ['games'], queryFn: async () => {
             const data = await rGetGames()
             return data
+        },
+        onError: (e: { detail: string }) => {
+            if (e.detail == 'Invalid token.') {
+                deleteCookie('token')
+                router.replace('/admin/login')
+
+            }
         }
     })
     if (isLoading) {
@@ -24,7 +35,7 @@ export const AdminGamesTable = () => {
     if (!games) { return <Title c={'red.5'} order={3}>Ошибка загрузки</Title> }
     const rows = games.map((element, idx) => (
         <Table.Tr key={element.id}>
-            <Table.Td ta={'center'}>{element.event_date as string}</Table.Td>
+            <Table.Td ta={'center'}>{dayjs(element.event_date).locale('ru').format("MMMM D,YYYY HH:mm")}</Table.Td>
             <Table.Td ta={'center'}>{element.name_ru}</Table.Td>
             <Table.Td ta={'center'}>{element.name_kz}</Table.Td>
             <Table.Td ta={'center'}>
@@ -36,8 +47,6 @@ export const AdminGamesTable = () => {
             <Table.Td ta={'center'}>
                 <DeleteGameBtn id={element.id} />
             </Table.Td>
-
-
         </Table.Tr>
     ));
 

@@ -3,6 +3,7 @@ import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
 import { GameStatus } from "@/shared/consts";
 import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import dayjs from "dayjs";
 import jsPDF from "jspdf";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -51,7 +52,7 @@ export const GamesTable = () => {
     }
     const rows = games.map((element, idx) => (
         <Table.Tr key={element.id}>
-            <Table.Td ta={'center'}>{element.event_date as string}</Table.Td>
+            <Table.Td ta={'center'}>{dayjs(element.event_date).locale(locale as string).format("DD-MM-YYYY HH:mm")}</Table.Td>
             <Table.Td ta={'center'}>{element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
             <Table.Td ta={'center'}>
                 <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
