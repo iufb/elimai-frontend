@@ -41,15 +41,15 @@ export const AddGameForm = ({ close }: { close: () => void }) => {
             <TextInput
                 error={errors["name_ru"]?.message}
                 {...register("name_ru", { required: "Обязательное поле" })}
-                placeholder={'Название RU'}
-                label={'Название RU'}
+                placeholder={'Противник RU'}
+                label={'Противник RU'}
 
             />
             <TextInput
                 error={errors["name_kz"]?.message}
                 {...register("name_kz", { required: "Обязательное поле" })}
-                placeholder={'Название KZ'}
-                label={'Название KZ'}
+                placeholder={'Противник KZ'}
+                label={'Противник KZ'}
             />
             <Controller
                 control={control}

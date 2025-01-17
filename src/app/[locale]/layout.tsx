@@ -133,7 +133,7 @@ export default async function RootLayout({ params, children }: { params: { local
 }
 const links =
     [
-        { img: "/logonew.png", href: "/ru/" },
+        { img: "/logonew.png", href: "/" },
         { img: "/it-hub.png", href: "https://www.instagram.com/abai_it?igsh=MWU3MmIyNTdnMG05aQ==" },
 
         { img: "/abu.png", href: "https://www.instagram.com/bokeikhan_university?igsh=MXBpaG43djVoZ3dxMA==" },

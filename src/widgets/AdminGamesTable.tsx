@@ -7,13 +7,6 @@ import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 
-const elements = [
-    { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
-    { position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen' },
-    { position: 39, mass: 88.906, symbol: 'Y', name: 'Yttrium' },
-    { position: 56, mass: 137.33, symbol: 'Ba', name: 'Barium' },
-    { position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium' },
-];
 export const AdminGamesTable = () => {
     const router = useRouter()
     const { data: games, isLoading, isError } = useQuery({
@@ -60,8 +53,8 @@ export const AdminGamesTable = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th ta={'center'}>Дата</Table.Th>
-                            <Table.Th ta={'center'}>Матч RU</Table.Th>
-                            <Table.Th ta={'center'}>Матч KZ</Table.Th>
+                            <Table.Th ta={'center'}>Противник RU</Table.Th>
+                            <Table.Th ta={'center'}>Противник KZ</Table.Th>
                             <Table.Th ta={'center'}>Статус</Table.Th>
                             <Table.Th ta={'center'}>Изменить</Table.Th>
                             <Table.Th ta={'center'}>Удалить</Table.Th>
