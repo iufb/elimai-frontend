@@ -13,6 +13,7 @@ import QRCode from 'qrcode'
 import { useEffect, useState } from "react"
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from "react-query"
 
+import "/public/Nunito-Bold-normal.js"
 
 export const ResultWindow = () => {
     const t = useTranslations()
@@ -92,7 +93,7 @@ export const ResultWindow = () => {
                         <Title order={2} c={'red.5'}>{t('result.error')}</Title>
 
                         <Button variant="base" onClick={() => refetch()}>{t('result.again')}</Button>
-                        <Button variant="base"><Link href={'/'}>{t('result.link')}</Link></Button>
+                        <Button variant="outline"><Link href={'/'}>{t('result.link')}</Link></Button>
                     </Stack>}
 
         </Center>

@@ -4,12 +4,9 @@ import { rGetGames } from "@/shared/api/games";
 import { GameStatus } from "@/shared/consts";
 import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import dayjs from "dayjs";
-import jsPDF from "jspdf";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import QRCode from 'qrcode';
 import { useQuery } from "react-query";
-import "/public/Nunito-Bold-normal.js";
 
 
 export const GamesTable = () => {
