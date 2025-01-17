@@ -22,7 +22,7 @@ export const rBuyTicket = (body: { data: any, locale: string }): Promise<any> =>
 };
 
 export const rGetTicket = (order: string | null): Promise<Ticket> => {
-    return customFetch({ method: "GET", path: "get-ticket", query: { ORDER: order } });
+    return customFetch({ method: "GET", path: "get-ticket/", query: { ORDER: order } });
 };
 
 
