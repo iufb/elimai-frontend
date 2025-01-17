@@ -3,13 +3,14 @@ import { rBuyTicket } from "@/shared/api/games";
 import { showErrorNotification } from "@/shared/notifications";
 import { Button, Input, Stack, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useMutation } from "react-query";
 
 export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     const t = useTranslations()
+    const { locale } = useParams()
     const router = useRouter()
     const {
         handleSubmit,
@@ -33,7 +34,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     });
     const onSubmit: SubmitHandler<{ tel: string, email: string }> = (data) => {
         console.log(data)
-        mutate({ TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: data.email ? data.email : " ", EVENT_ID: gameId })
+        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: data.email ? data.email : " ", EVENT_ID: gameId }, locale: locale as string })
 
     };
     return <form onSubmit={handleSubmit(onSubmit)}>

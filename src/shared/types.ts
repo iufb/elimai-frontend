@@ -8,7 +8,14 @@ export type Game = {
     created_at: string  // Can be a string (ISO format) or a Date object
     status: string  // Depending on the status type (string, boolean, or enum)
 };
+export type Ticket = {
+    name_ru: string
+    name_kz: string
+    date: string
+    status: string
+    code: string
 
+}
 export const notificationErrors = {
     file: {
         title: "Ошибка при загрузке файла.",
