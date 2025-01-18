@@ -1,18 +1,17 @@
 'use client'
 
 import { Link } from "@/i18n/routing"
-import { rGetTicket } from "@/shared/api/games"
-import { Ticket } from "@/shared/types"
 import { Box, Button, Center, LoadingOverlay, Stack, Text, Title } from "@mantine/core"
-import dayjs from "dayjs"
 import jsPDF from "jspdf"
 import { Ban, CircleHelp } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams, useSearchParams } from "next/navigation"
 import QRCode from 'qrcode'
 import { useEffect, useState } from "react"
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from "react-query"
 
+import { rGetTicket } from "@/shared/api/games"
+import dayjs from "dayjs"
+import { useQuery } from "react-query"
 import "/public/Nunito-Bold-normal.js"
 
 export const ResultWindow = () => {
@@ -20,21 +19,20 @@ export const ResultWindow = () => {
     const query = useSearchParams()
     const order = query.get('order')
     const { locale } = useParams()
-    const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isFetching, error, refetch } = useQuery({
         queryKey: ['getTicket'], queryFn: async () => {
             const data = await rGetTicket(order)
-            return data
-        },
-        enabled: !!order
-    })
-    useEffect(() => {
-        if (data) {
             const dateStr = dayjs(data.date).format('DD.MM.YYYY')
             const timeStr = dayjs(data.date).format('HH:mm')
             const enemy = locale == 'ru' ? data.name_ru : data.name_kz
             createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
-        }
-    }, [data])
+
+            return data
+        },
+        enabled: !!order,
+        refetchOnWindowFocus: false
+    })
+    console.log(error, "ERROR")
     const createTicket = ({ enemy, date, time, qrValue }: { enemy: string, date: string, time: string, qrValue: string }) => {
         const elimai = locale == 'ru' ? "Елимай" : "Елімай"
         const doc = new jsPDF(); // Default is 'portrait', 'px' unit
@@ -82,10 +80,12 @@ export const ResultWindow = () => {
 
     return <Box h={'50svh'}>
         <Center h={'100%'} pos={'relative'}>
-            {isLoading ? <LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /> :
-                !isError ?
+            {isFetching ? <LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isFetching} zIndex={1000} /> :
+                !error ?
                     <Stack>
-                        <NotDownloadedView refetch={refetch} />
+                        <NotDownloadedView refetch={() => {
+                            refetch()
+                        }} />
                     </Stack>
                     :
                     <Stack align="center">
@@ -101,7 +101,7 @@ export const ResultWindow = () => {
 
 }
 
-const NotDownloadedView = ({ refetch }: { refetch: <TPageData>(options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined) => Promise<QueryObserverResult<Ticket, unknown>> }) => {
+const NotDownloadedView = ({ refetch }: { refetch: () => void }) => {
     const [timer, setTimer] = useState(10)
     const t = useTranslations()
     useEffect(() => {
@@ -118,7 +118,7 @@ const NotDownloadedView = ({ refetch }: { refetch: <TPageData>(options?: (Refetc
     }
     return <Stack justify="center" align="center">
         <CircleHelp size={80} color="var(--mantine-color-elimai-6)" />
-        <Title order={3} c={"slate.4"}>
+        <Title ta={'center'} order={3} c={"slate.4"}>
             {t('result.notStarted.title')} <button disabled={timer !== 0} onClick={onClick}>
                 <Text fw={'bold'} size="lg" c={timer > 0 ? "slate.4" : "elimai.6"}>
                     {t('result.notStarted.timer.text')} {timer > 0 && t('result.notStarted.timer.time', { timer })}
