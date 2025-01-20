@@ -75,7 +75,7 @@ export const ResultWindow = () => {
             doc.save(`Билет ${elimai} - ${enemy}.pdf`);
         };
 
-        templateImage.src = '/ticket-template.jpg'; // Path to the template image
+        templateImage.src = '/test-elimai.png'; // Path to the template image
     };
 
     return <Box h={'50svh'}>
