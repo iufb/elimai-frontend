@@ -14,7 +14,7 @@ export const HeaderLink = () => {
         if (pathname == '/') {
             router.push('https://fcelimai.kz/')
         } else {
-            router.back()
+            router.push('/')
         }
 
     }
