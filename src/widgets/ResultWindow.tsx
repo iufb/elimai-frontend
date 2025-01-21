@@ -60,22 +60,22 @@ export const ResultWindow = () => {
 
             doc.setFontSize(20)
             doc.setTextColor('#697BD3')
-            doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 52, { align: 'center' })
-            doc.text(elimai.toUpperCase(), pageHalf + pageHalf / 2.8, pageHeight / 2 + 52, { align: 'center' })
+            doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 65, { align: 'center' })
+            doc.text(elimai.toUpperCase(), pageHalf + pageHalf / 2.8, pageHeight / 2 + 65, { align: 'center' })
 
             doc.setFontSize(18)
             doc.setTextColor('#fff')
-            doc.text(date, pageHalf, pageHeight / 2 + 70, { align: 'center' })
+            doc.text(date, pageHalf, pageHeight / 2 + 83, { align: 'center' })
 
             doc.setFontSize(26)
             doc.setTextColor('#ECE720')
-            doc.text(time, pageHalf, pageHeight / 2 + 90, { align: 'center' })
+            doc.text(time, pageHalf, pageHeight / 2 + 103, { align: 'center' })
 
             // Save the PDF
             doc.save(`Билет ${elimai} - ${enemy}.pdf`);
         };
 
-        templateImage.src = '/test-elimai.png'; // Path to the template image
+        templateImage.src = '/4.PNG'; // Path to the template image
     };
 
     return <Box h={'50svh'}>

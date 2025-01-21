@@ -29,7 +29,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
         },
         onError: (e) => {
             console.log(e)
-            showErrorNotification({ title: t('buy.errors.post.title'), message: t('buy.errors.post.description') })
+            showErrorNotification({ title: t('errors.post.title'), message: t('errors.post.description') })
 
         }
     });
@@ -43,7 +43,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
             <Controller
                 name="tel"
                 control={control}
-                rules={{ required: t('buy.errors.required') }}
+                rules={{ required: t('errors.required') }}
                 render={({ field: { value, onChange } }) => <Input
                     required
                     component={IMaskInput}

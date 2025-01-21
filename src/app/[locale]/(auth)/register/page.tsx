@@ -1,5 +1,8 @@
-import { Box } from "@mantine/core";
+import { RegisterForm } from "@/features/forms";
+import { Center } from "@mantine/core";
 
 export default function LoginPage() {
-    return <Box>Register</Box>
+    return <Center mih={'100vh'}>
+        <RegisterForm />
+    </Center>
 }
