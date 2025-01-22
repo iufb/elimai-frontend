@@ -5,6 +5,7 @@ import {
     mantineHtmlProps,
     MantineProvider
 } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { Nunito } from 'next/font/google';
@@ -88,6 +89,8 @@ export default async function RootLayout({ params, children }: { params: { local
             <body>
                 <MantineProvider theme={theme}>
                     <NextIntlClientProvider messages={messages}>
+
+                        <Notifications />
                         {children}
                     </NextIntlClientProvider>
                 </MantineProvider>

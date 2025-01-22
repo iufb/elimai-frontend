@@ -3,7 +3,7 @@
 import { rLogin } from "@/shared/api/auth";
 import { notificationErrors } from "@/shared/consts";
 import { showErrorNotification } from "@/shared/notifications";
-import { Button, Stack, TextInput, Title } from "@mantine/core";
+import { Button, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
 import { deleteCookie } from "cookies-next";
 import { setCookie } from "cookies-next/client";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,9 @@ export const AdminLoginForm = () => {
         mutationKey: ["login"],
         mutationFn: rLogin,
         onSuccess: (data) => {
-            setCookie('token', data.token, { maxAge: 60 * 60 })
+            console.log(data)
+            setCookie('access', data.access)
+            setCookie('refresh', data.refresh)
             router.replace('/admin')
         },
         onError: (e) => {
@@ -25,7 +27,7 @@ export const AdminLoginForm = () => {
         }
     });
 
-    const onSubmit = (data: { username: string; password: string }) => {
+    const onSubmit = (data: { email: string; password: string }) => {
         console.log(data)
         mutate(data);
         deleteCookie("token");
@@ -36,7 +38,7 @@ export const AdminLoginForm = () => {
         getValues,
         formState: { errors },
     } = useForm<{
-        username: string;
+        email: string;
         password: string;
     }>();
     return (
@@ -46,11 +48,11 @@ export const AdminLoginForm = () => {
             <Stack miw={350} w={'100%'} gap={10}>
                 <Title order={3}>Авторизация</Title>
                 <TextInput
-                    error={errors["username"]?.message}
-                    {...register("username", { required: "Обязательное поле" })}
+                    error={errors["email"]?.message}
+                    {...register("email", { required: "Обязательное поле" })}
                     placeholder={'Логин'}
                 />
-                <TextInput
+                <PasswordInput
                     type="password"
                     error={errors["password"]?.message}
                     {...register("password", { required: "Обязательное поле" })}

@@ -2,12 +2,10 @@ import { routing } from "@/i18n/routing";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
-// Locale middleware setup
 const intlMiddleware = createMiddleware(routing);
 
-// Authentication and redirection middleware
-function authMiddleware(req: NextRequest) {
-    const token = req.cookies.get("token");
+function adminMiddleware(req: NextRequest) {
+    const token = req.cookies.get("access");
     const { pathname } = req.nextUrl;
     if (pathname == `/admin` && !token) {
         return NextResponse.redirect(new URL(`/admin/login`, req.url))
@@ -16,20 +14,32 @@ function authMiddleware(req: NextRequest) {
         return NextResponse.redirect(new URL(`/admin`, req.url))
     }
 
-    // If no redirect is needed, allow the request to proceed
     return NextResponse.next();
 }
 
+function authMiddleware(req: NextRequest) {
+    const token = req.cookies.get("access");
+    const { pathname } = req.nextUrl;
+
+    console.log(pathname)
+
+    if (pathname == `/profile` && !token) {
+        return NextResponse.redirect(new URL(`/admin/login`, req.url))
+    }
+    if (pathname == `/admin/login` && token) {
+        return NextResponse.redirect(new URL(`/admin`, req.url))
+    }
+
+    return NextResponse.next();
+
+}
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
-    console.log(req.referrer)
-    // Skip the locale middleware for admin routes
-    if (pathname.startsWith("/admin") || pathname.startsWith("/admin/login")) {
-        return authMiddleware(req);
+    if (pathname.startsWith("/admin")) {
+        return adminMiddleware(req);
     }
 
-    // For all other routes, apply the intlMiddleware
     return intlMiddleware(req);
 }
 

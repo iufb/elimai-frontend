@@ -26,16 +26,11 @@ a {
     }
 }
 
-.disabled {
-    color: var(--mantine-color-slate-5);
-    ;
-}
-
-.active {
-
+.link {
     color: var(--mantine-color-elimai-6);
-    ;
+    font-weight: bold;
 }
+
 
 .otp-container {
     width: 100%;

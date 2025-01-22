@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { rSendCode, rVerifyCode } from "@/shared/api/auth";
 import { showErrorNotification } from "@/shared/notifications";
-import { Button, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
+import { Button, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,9 +26,12 @@ export const RegisterForm = () => {
             // setCookie('token', data.token, { maxAge: 60 * 60 })
             // router.replace('/admin')
         },
-        onError: (e) => {
-            console.log(e)
-            showErrorNotification({ title: t('errors.auth.code.title'), message: t('errors.auth.code.message') });
+        onError: (e: { status: number }) => {
+            if (e.status >= 400 && e.status < 500) {
+                showErrorNotification({ title: t('errors.auth.alreadyExists.title'), message: t('errors.auth.alreadyExists.message') });
+            } else {
+                showErrorNotification({ title: t('errors.auth.code.title'), message: t('errors.auth.code.message') });
+            }
         }
     });
 
@@ -60,8 +63,6 @@ export const RegisterForm = () => {
                 />
                 <PasswordInput
                     type="password"
-
-
                     label={t('auth.password')}
                     error={errors["password"]?.message}
                     {...register("password", {
@@ -92,6 +93,7 @@ export const RegisterForm = () => {
                     placeholder={t('auth.password')}
                 />
 
+                <Text c={'slate.6'} >{t.rich('auth.register.login', { a: chunk => <Link className="link" href={'/login'}>{chunk}</Link> })}</Text>
                 <Button variant="base" type="submit" >{t('auth.register.btn')}</Button>
 
             </Stack>
