@@ -121,7 +121,7 @@ const NotDownloadedView = ({ refetch }: { refetch: () => void }) => {
         <Title ta={'center'} order={3} c={"slate.4"}>
             {t('result.notStarted.title')} <button disabled={timer !== 0} onClick={onClick}>
                 <Text fw={'bold'} size="lg" c={timer > 0 ? "slate.4" : "elimai.6"}>
-                    {t('result.notStarted.timer.text')} {timer > 0 && t('result.notStarted.timer.time', { timer })}
+                    {t('result.notStarted.timer.text')} {timer > 0 && t('timer', { timer })}
                 </Text>
             </button>
         </Title>

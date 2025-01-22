@@ -1,13 +1,13 @@
 "use client";
 
-import { notificationErrors } from "@/shared/consts";
+import { useRouter } from "@/i18n/routing";
+import { rSendCode, rVerifyCode } from "@/shared/api/auth";
 import { showErrorNotification } from "@/shared/notifications";
-import { Box, Button, Stack, TextInput, Title } from "@mantine/core";
-import { deleteCookie } from "cookies-next";
+import { Button, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import OTPInput from "react-otp-input";
 import { useMutation } from "react-query";
 type RegisterDto = {
     email: string;
@@ -18,24 +18,23 @@ type RegisterDto = {
 export const RegisterForm = () => {
     const [showConfirm, setShowConfirm] = useState(false)
     const t = useTranslations()
-    const router = useRouter();
-    const { mutate, isLoading, isError } = useMutation({
-        mutationKey: ["register"],
-        mutationFn: async () => { },
+    const { mutate: sendCode, isLoading } = useMutation({
+        mutationKey: ["send-code"],
+        mutationFn: rSendCode,
         onSuccess: (data) => {
+            setShowConfirm(true)
             // setCookie('token', data.token, { maxAge: 60 * 60 })
             // router.replace('/admin')
         },
         onError: (e) => {
             console.log(e)
-            showErrorNotification(notificationErrors.login);
+            showErrorNotification({ title: t('errors.auth.code.title'), message: t('errors.auth.code.message') });
         }
     });
+
     const onRegisterFormSubmit = (data: RegisterDto) => {
         console.log(data)
-        setShowConfirm(true)
-        // mutate(data);
-        deleteCookie("token");
+        sendCode(data.email);
     };
     const {
         handleSubmit,
@@ -43,7 +42,7 @@ export const RegisterForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<RegisterDto>({ mode: 'onChange' });
+    } = useForm<RegisterDto>({ mode: 'onChange', defaultValues: { email: "bashirov3ld2@gmail.com", password: "19931991iuN", confirmPassword: "19931991iuN" } });
 
     const password = watch('password', '')
     return (!showConfirm ?
@@ -59,7 +58,7 @@ export const RegisterForm = () => {
                     {...register("email", { required: t('errors.required') })}
                     placeholder={t('auth.email')}
                 />
-                <TextInput
+                <PasswordInput
                     type="password"
 
 
@@ -79,9 +78,8 @@ export const RegisterForm = () => {
                     })}
                     placeholder={t('auth.password')}
                 />
-                <TextInput
+                <PasswordInput
                     type="password"
-
                     label={t('auth.confirmPassword')}
                     error={errors["confirmPassword"]?.message}
                     {...register("confirmPassword", {
@@ -94,14 +92,78 @@ export const RegisterForm = () => {
                     placeholder={t('auth.password')}
                 />
 
-                <Button variant="base" disabled={isLoading} type="submit" >{t('auth.register.btn')}</Button>
+                <Button variant="base" type="submit" >{t('auth.register.btn')}</Button>
 
             </Stack>
-        </form> : <ConfirmForm />
+        </form> : <ConfirmForm userData={{ email: getValues().email, password: getValues().password }} />
     );
 };
 
+interface ConfirmFormProps {
+    userData: Omit<RegisterDto, "confirmPassword">
+}
+const ConfirmForm = ({ userData }: ConfirmFormProps) => {
+    const [otp, setOtp] = useState('');
+    const t = useTranslations()
 
-const ConfirmForm = () => {
-    return <Box></Box>
+    const router = useRouter();
+    const { mutate: checkCode, isLoading, isError } = useMutation({
+        mutationKey: ["check-code"],
+        mutationFn: rVerifyCode,
+        onSuccess: (data) => {
+            router.replace('/login')
+        },
+        onError: (e) => {
+            console.log(e)
+            showErrorNotification({ title: t('errors.auth.otp.title'), message: t('errors.auth.otp.message') });
+        }
+    });
+    const verify = () => {
+        checkCode({ ...userData, code: otp })
+    }
+    return <Stack gap={20}>
+        <Title order={2}>{t('auth.confirm.title')}</Title>
+        <OTPInput
+            value={otp}
+            onChange={setOtp}
+            numInputs={6}
+            inputStyle={'otp'}
+            containerStyle={'otp-container'}
+            // renderSeparator={<span className="separator">-</span>}
+            renderInput={(props) => <input  {...props} />}
+        />
+        <OtpTimer email={userData.email} />
+        <Button loading={isLoading} onClick={verify} disabled={otp.length !== 6 || isLoading} variant="base">{t('auth.confirm.btn')}</Button>
+    </Stack>
+}
+interface OtpTimerProps {
+    email: string
+}
+const OtpTimer = ({ email }: OtpTimerProps) => {
+    const [timer, setTimer] = useState(10)
+    const { mutate: resendCode, isLoading } = useMutation({
+        mutationKey: ["resend-code"],
+        mutationFn: rSendCode,
+        onSuccess: (data) => {
+            setTimer(60)
+        },
+        onError: (e) => {
+            console.log(e)
+            showErrorNotification({ title: t('errors.auth.code.title'), message: t('errors.auth.code.message') });
+        }
+    });
+
+    useEffect(() => {
+        if (timer > 0) {
+            const timer = setInterval(() => {
+                setTimer((prevSeconds) => prevSeconds - 1);
+            }, 1000); // Update every second
+            return () => clearInterval(timer); // Cleanup on unmount
+        }
+    }, [timer]);
+    const t = useTranslations()
+    return <button onClick={() => resendCode(email)} disabled={timer > 0} className={timer > 0 ? 'disabled' : 'active'}>
+        {t('auth.confirm.timer')}  {timer > 0 && t('timer', { timer })}
+    </button>
+
 }
