@@ -65,7 +65,8 @@ export const LoginForm = () => {
                 })}
                 placeholder={t('auth.password')}
             />
-            <Text c={'slate.6'} >{t.rich('auth.login.register', { a: (chunk) => <Link className="link" href={'/register'}>{chunk}</Link> })}</Text>
+            <Text size="sm" c={'slate.6'} >{t.rich('auth.login.restore', { a: (chunk) => <Link className="link" href={'/restore'}>{chunk}</Link> })}</Text>
+            <Text size="sm" c={'slate.6'} >{t.rich('auth.login.register', { a: (chunk) => <Link className="link" href={'/register'}>{chunk}</Link> })}</Text>
             <Button variant="base" type="submit" >{t('auth.login.btn')}</Button>
 
         </Stack>

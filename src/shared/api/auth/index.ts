@@ -15,6 +15,13 @@ export const rVerifyCode = (data: {
 }) => {
     return customFetch({ method: "POST", path: 'verify-code/', body: { json: { ...data, full_name: " " } } })
 }
+export const rResetPassword = (data: {
+    email: string,
+    code: string,
+    new_password: string
+}) => {
+    return customFetch({ method: "POST", path: 'reset-password/', body: { json: data } })
+}
 
 export const rRefreshToken = async (refresh: string): Promise<{ access: string } | undefined> => {
     console.log(refresh)

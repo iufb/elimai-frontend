@@ -1,21 +1,20 @@
-"use client";
-
-import { Link } from "@/i18n/routing";
+'use client'
 import { rSendCode } from "@/shared/api/auth";
 import { showErrorNotification } from "@/shared/notifications";
-import { Button, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Button, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { ConfirmForm } from "./ConfirmForm";
-type RegisterDto = {
+
+type RestoreDto = {
     email: string;
-    password: string;
-    confirmPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
 
 }
-export const RegisterForm = () => {
+export const RestoreForm = () => {
     const [showConfirm, setShowConfirm] = useState(false)
     const t = useTranslations()
     const { mutate: sendCode, isLoading } = useMutation({
@@ -35,7 +34,7 @@ export const RegisterForm = () => {
         }
     });
 
-    const onRegisterFormSubmit = (data: RegisterDto) => {
+    const onRegisterFormSubmit = (data: RestoreDto) => {
         console.log(data)
         sendCode(data.email);
     };
@@ -45,15 +44,15 @@ export const RegisterForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<RegisterDto>({ mode: 'onChange', defaultValues: { email: "bashirov3ld2@gmail.com", password: "19931991iuN", confirmPassword: "19931991iuN" } });
+    } = useForm<RestoreDto>({ mode: 'onChange' });
 
-    const password = watch('password', '')
+    const password = watch('newPassword', '')
     return (!showConfirm ?
         <form
             onSubmit={handleSubmit(onRegisterFormSubmit)}
         >
             <Stack px={20} py={10} miw={350} w={'100%'} gap={10} >
-                <Title order={3}>{t('auth.register.title')}</Title>
+                <Title order={3}>{t('auth.restore.title')}</Title>
                 <TextInput
                     type="email"
                     label={t('auth.email')}
@@ -61,11 +60,12 @@ export const RegisterForm = () => {
                     {...register("email", { required: t('errors.required') })}
                     placeholder={t('auth.email')}
                 />
+
                 <PasswordInput
                     type="password"
-                    label={t('auth.password')}
-                    error={errors["password"]?.message}
-                    {...register("password", {
+                    label={t('auth.newPassword')}
+                    error={errors["newPassword"]?.message}
+                    {...register("newPassword", {
                         required: t('errors.required'), validate: {
                             hasNumber: (value) =>
                                 /\d/.test(value) || t('errors.auth.hasNumber'),
@@ -77,28 +77,24 @@ export const RegisterForm = () => {
                                 t('errors.auth.hasMinimumLength'),
                         }
                     })}
-                    placeholder={t('auth.password')}
+                    placeholder={t('auth.newPassword')}
                 />
                 <PasswordInput
                     type="password"
                     label={t('auth.confirmPassword')}
-                    error={errors["confirmPassword"]?.message}
-                    {...register("confirmPassword", {
+                    error={errors["confirmNewPassword"]?.message}
+                    {...register("confirmNewPassword", {
                         required: t('errors.required'), validate: {
                             isEqual: (value) => value == password ||
                                 t('errors.auth.not-equal'),
-
                         }
                     })}
-                    placeholder={t('auth.password')}
+                    placeholder={t('auth.confirmPassword')}
                 />
-
-                <Text c={'slate.6'} >{t.rich('auth.register.login', { a: chunk => <Link className="link" href={'/login'}>{chunk}</Link> })}</Text>
-                <Button variant="base" type="submit" >{t('auth.register.btn')}</Button>
+                <Button variant="base" type="submit" >{t('auth.restore.btn')}</Button>
 
             </Stack>
-        </form> : <ConfirmForm mode="register" userData={{ email: getValues().email, password: getValues().password }} />
+        </form> : <ConfirmForm mode="restore" userData={{ email: getValues().email, password: getValues().newPassword }} />
     );
 };
-
 
