@@ -1,8 +1,9 @@
 'use client'
+import { BuySubscriptionBtn } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
 import { GameStatus } from "@/shared/consts";
-import { Box, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
+import { Box, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -64,7 +65,10 @@ export const GamesTable = () => {
 
     return (
         <Stack align="center" my={20} >
-            <Title order={2}>Матчи</Title>
+            <Group justify="space-between" w={'100%'} maw={1200}>
+                <Title order={2}>{t('title')}</Title>
+                <BuySubscriptionBtn />
+            </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >
                     <Tabs.Tab value="first">{t('tabs.next')}</Tabs.Tab>

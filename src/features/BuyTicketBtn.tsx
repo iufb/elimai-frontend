@@ -12,10 +12,10 @@ export const BuyTicketBtn = ({ gameId, disabled, ...props }: BuyTicketBtnProps) 
     const t = useTranslations()
     return (
         <>
-            <Modal centered size={'lg'} opened={opened} onClose={close} title={t('buy.modal')}>
+            <Modal centered size={'lg'} opened={opened} onClose={close} title={t('buy.ticketModal')}>
                 <BuyTicketForm gameId={gameId} />
             </Modal>
-            <AuthProtectedButton disabled={disabled} styled label={
+            <AuthProtectedButton disabled={disabled} variant="base" label={
                 t('buy.btn')
             } action={open} />
         </>

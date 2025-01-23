@@ -25,7 +25,7 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                         <Group ml="xl" gap={0} visibleFrom="md" align='flex-end'>
                             <Link href={'/'} className={classes.control}>{t('header.main')}</Link>
                             <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
-                            <AuthProtectedButton className={classes.control} styled={false} label={t('header.profile')} action={() => {
+                            <AuthProtectedButton className={classes.control} label={t('header.profile')} action={() => {
                                 router.push('/profile')
                             }} />
 

@@ -9,11 +9,11 @@ import { useTranslations } from "next-intl"
 interface AuthProtectedButtonProps {
     label: string
     action: () => void
-    styled?: boolean
+    variant?: string
     className?: string
     disabled?: boolean
 }
-export function AuthProtectedButton({ label, className, action, styled, disabled, ...props }: AuthProtectedButtonProps) {
+export function AuthProtectedButton({ label, className, action, variant, disabled, ...props }: AuthProtectedButtonProps) {
     const [opened, { open, close }] = useDisclosure(false);
     const { isLogged } = useAuth()
     const handleClick = () => {
@@ -30,8 +30,8 @@ export function AuthProtectedButton({ label, className, action, styled, disabled
             <Title order={3}></Title>
             <Text>{t.rich('auth.protected.desc', { login: chunk => <Link className="link" href={'/login'}>{chunk}</Link>, register: chunk => <Link className="link" href={'/register'}>{chunk}</Link>, })}</Text>
         </Modal>
-        {styled ?
-            <Button variant={'base'} onClick={handleClick} disabled={disabled}>{label}</Button> :
+        {variant ?
+            <Button variant={variant} onClick={handleClick} disabled={disabled}>{label}</Button> :
             <UnstyledButton onClick={handleClick} className={className}>{label}</UnstyledButton>
         }</>
 
