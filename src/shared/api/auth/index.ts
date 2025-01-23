@@ -5,8 +5,8 @@ export const rLogin = (body: { email: string; password: string }) => {
 };
 
 
-export const rSendCode = (email: string) => {
-    return customFetch({ method: "POST", path: 'send-code/', body: { json: { email } } })
+export const rSendCode = (body: { email: string, type: string }) => {
+    return customFetch({ method: "POST", path: 'send-code/', body: { json: body } })
 }
 export const rVerifyCode = (data: {
     email: string,

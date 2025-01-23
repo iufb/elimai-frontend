@@ -23,5 +23,10 @@
     &[data-variant="outline"] {
         border: 1px solid var(--mantine-color-elimai-6);
         color: var(--mantine-color-elimai-6);
+
+        &:disabled {
+            border: 1px solid var(--mantine-color-slate-5);
+            color: var(--mantine-color-slate-5);
+        }
     }
 }

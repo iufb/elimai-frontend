@@ -34,9 +34,9 @@ export const RestoreForm = () => {
         }
     });
 
-    const onRegisterFormSubmit = (data: RestoreDto) => {
+    const onRestoreFormSubmit = (data: RestoreDto) => {
         console.log(data)
-        sendCode(data.email);
+        sendCode({ email: data.email, type: 'restore' });
     };
     const {
         handleSubmit,
@@ -49,7 +49,7 @@ export const RestoreForm = () => {
     const password = watch('newPassword', '')
     return (!showConfirm ?
         <form
-            onSubmit={handleSubmit(onRegisterFormSubmit)}
+            onSubmit={handleSubmit(onRestoreFormSubmit)}
         >
             <Stack px={20} py={10} miw={350} w={'100%'} gap={10} >
                 <Title order={3}>{t('auth.restore.title')}</Title>

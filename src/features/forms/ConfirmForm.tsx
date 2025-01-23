@@ -1,9 +1,9 @@
 'use client'
+import { useRouter } from "@/i18n/routing";
 import { rResetPassword as rRestorePassword, rSendCode, rVerifyCode } from "@/shared/api/auth";
 import { showErrorNotification } from "@/shared/notifications";
 import { Button, Stack, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import OTPInput from "react-otp-input";
 import { useMutation } from "react-query";
@@ -59,14 +59,15 @@ export const ConfirmForm = ({ mode, userData }: ConfirmFormProps) => {
             // renderSeparator={<span className="separator">-</span>}
             renderInput={(props) => <input  {...props} />}
         />
-        <OtpTimer email={userData.email} />
+        <OtpTimer mode={mode} email={userData.email} />
         <Button loading={registerIsLoading} onClick={verify} disabled={otp.length !== 6 || registerIsLoading} variant="base">{t('auth.confirm.btn')}</Button>
     </Stack>
 }
 interface OtpTimerProps {
     email: string
+    mode: 'register' | 'restore'
 }
-const OtpTimer = ({ email }: OtpTimerProps) => {
+const OtpTimer = ({ email, mode }: OtpTimerProps) => {
     const [timer, setTimer] = useState(10)
     const { mutate: resendCode, isLoading } = useMutation({
         mutationKey: ["resend-code"],
@@ -89,8 +90,8 @@ const OtpTimer = ({ email }: OtpTimerProps) => {
         }
     }, [timer]);
     const t = useTranslations()
-    return <button onClick={() => resendCode(email)} disabled={timer > 0} className={timer > 0 ? 'disabled' : 'active'}>
+    return <Button variant="outline" onClick={() => resendCode({ email, type: mode == 'register' ? "Registr" : "restore" })} disabled={timer > 0}  >
         {t('auth.confirm.timer')}  {timer > 0 && t('timer', { timer })}
-    </button>
+    </Button>
 
 }
