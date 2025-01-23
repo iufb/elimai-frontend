@@ -7,10 +7,15 @@ import { useEffect, useState } from "react"
 export const useAuth = () => {
     const [authStatus, setAuthStatus] = useState({ isLogged: false, isAdmin: false })
     useEffect(() => {
+
         const token = getCookie('access')
         customFetch({ method: "GET", path: "is-admin/" }).then(() => {
             setAuthStatus({ isLogged: true, isAdmin: true })
-        }).catch(e => { })
+        }).catch(e => {
+            if (e.status == 403) {
+                setAuthStatus({ isLogged: true, isAdmin: false })
+            }
+        })
     }, [])
     console.log(authStatus)
     return authStatus

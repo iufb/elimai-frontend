@@ -20,6 +20,17 @@
         }
     }
 
+    &[data-variant="unstyled"] {
+        display: block;
+        padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+        border-radius: var(--mantine-radius-md);
+        font-weight: 500;
+        background: inherit;
+        color: inherit;
+        font-size: 1rem;
+
+    }
+
     &[data-variant="outline"] {
         border: 1px solid var(--mantine-color-elimai-6);
         color: var(--mantine-color-elimai-6);

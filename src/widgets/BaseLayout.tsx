@@ -23,10 +23,10 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Image src='/logonew.png' width={50} height={50} alt='e-logo' />
                         <Group ml="xl" gap={0} visibleFrom="md" align='flex-end'>
-                            <Link href={'/profile'} className={classes.control}>{t('header.main')}</Link>
+                            <Link href={'/'} className={classes.control}>{t('header.main')}</Link>
                             <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
-                            <AuthProtectedButton className={classes.control} label={t('header.profile')} action={() => {
-                                router.push('/')
+                            <AuthProtectedButton className={classes.control} styled={false} label={t('header.profile')} action={() => {
+                                router.push('/profile')
                             }} />
 
                         </Group>

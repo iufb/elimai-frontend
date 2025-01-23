@@ -1,12 +1,13 @@
 'use client'
-import { rBuyTicket } from "@/shared/api/games";
+import { rBuyTicket, rGetTicketsCount } from "@/shared/api/games";
 import { showErrorNotification } from "@/shared/notifications";
-import { Button, Input, Stack, TextInput } from "@mantine/core";
+import { Box, Button, Input, Select, Stack, Text } from "@mantine/core";
+import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     const t = useTranslations()
@@ -18,8 +19,8 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
         getValues,
         control,
         formState: { errors },
-    } = useForm<{ tel: string, email: string }>();
-    const { mutate, isLoading, isError } = useMutation({
+    } = useForm<{ tel: string, count: string }>();
+    const { mutate, isLoading: mutateLoading, isError } = useMutation({
         mutationKey: [`buyTicket ${gameId}`],
         mutationFn: rBuyTicket,
         onSuccess: (data) => {
@@ -33,9 +34,11 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
 
         }
     });
-    const onSubmit: SubmitHandler<{ tel: string, email: string }> = (data) => {
+    const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
+    const count = 7000 - (ticketsCount ? parseInt(ticketsCount.message) : 0)
+    const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {
         console.log(data)
-        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: data.email ? data.email : " ", EVENT_ID: gameId }, locale: locale as string })
+        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId }, locale: locale as string })
 
     };
     return <form onSubmit={handleSubmit(onSubmit)}>
@@ -44,28 +47,35 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
                 name="tel"
                 control={control}
                 rules={{ required: t('errors.required') }}
-                render={({ field: { value, onChange } }) => <Input
-                    required
-                    component={IMaskInput}
-                    mask="+7 (000) 000-00-00"
-                    value={value}
-                    onChange={onChange}
-                    error={errors["tel"]?.message}
-                    placeholder={t('buy.form.tel')}
-                    label={t('buy.form.tel')}
+                render={({ field: { value, onChange } }) => <Box>
+                    <label htmlFor="tel" ><Text fz={14} fw={500}>{t('buy.form.tel')}</Text></label>
+                    <Input
+                        id="tel"
+                        required
+                        component={IMaskInput}
+                        mask="+7 (000) 000-00-00"
+                        value={value}
+                        onChange={onChange}
+                        error={errors["tel"]?.message}
+                        placeholder={t('buy.form.tel')}
+                        label={t('buy.form.tel')}
 
-                />} />
-            <TextInput
-                error={errors["email"]?.message}
-                type="email"
-                {...register("email")}
-                placeholder={t('buy.form.email')}
-                label={t('buy.form.email')}
+                    /></Box>} />
+            <Controller
+                control={control}
+                name="count"
+                rules={{ required: t('errors.required') }}
+                render={({ field: { value, onChange } }) =>
+                    <Select
+                        checkIconPosition="right"
+                        comboboxProps={{ transitionProps: { transition: 'pop', duration: 200, }, shadow: 'xl' }}
+                        label={t('buy.form.select')} placeholder={t('buy.form.select')} data={['1', '2', '3']} value={value} onChange={value => onChange(value)} />}
             />
+            <Text c="slate.6">{t('buy.form.count', { count })} </Text>
             <Button
-                loading={isLoading}
+                loading={mutateLoading || isLoading}
                 variant="base"
-                disabled={isLoading}
+                disabled={mutateLoading || isLoading || count == 0}
                 type="submit" >{t('buy.form.btn')}</Button>
         </Stack>
     </form >

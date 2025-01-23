@@ -25,6 +25,10 @@ export const rGetTicket = (order: string | null): Promise<Ticket> => {
     return customFetch({ method: "GET", path: "get-ticket/", query: { ORDER: order } });
 };
 
+export const rGetTicketsCount = (gameId: number): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "get-tickets-count/", query: { EVENT_ID: gameId } });
+};
+
 
 
 

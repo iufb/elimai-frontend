@@ -21,6 +21,7 @@ export const LoginForm = () => {
         onSuccess: (data) => {
             setCookie('access', data.access)
             setCookie('refresh', data.refresh)
+            setCookie('email', data.email)
             router.replace('/')
         },
         onError: (e) => {

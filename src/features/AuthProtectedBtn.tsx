@@ -1,14 +1,19 @@
 'use client'
 
+import { Link } from "@/i18n/routing"
 import { useAuth } from "@/shared/hooks"
-import { Modal, UnstyledButton, UnstyledButtonProps } from "@mantine/core"
+import { Button, Modal, Text, Title, UnstyledButton } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
+import { useTranslations } from "next-intl"
 
-interface AuthProtectedButtonProps extends UnstyledButtonProps {
+interface AuthProtectedButtonProps {
     label: string
     action: () => void
+    styled?: boolean
+    className?: string
+    disabled?: boolean
 }
-export const AuthProtectedButton = ({ label, action, className, ...props }: AuthProtectedButtonProps) => {
+export function AuthProtectedButton({ label, className, action, styled, disabled, ...props }: AuthProtectedButtonProps) {
     const [opened, { open, close }] = useDisclosure(false);
     const { isLogged } = useAuth()
     const handleClick = () => {
@@ -19,9 +24,16 @@ export const AuthProtectedButton = ({ label, action, className, ...props }: Auth
         }
         open()
     }
+    const t = useTranslations()
     return <>
-        <Modal size={'lg'} opened={opened} onClose={close} title={'Вы не авторизованны'}>
-            modal
+        <Modal size={'lg'} opened={opened} onClose={close} >
+            <Title order={3}></Title>
+            <Text>{t.rich('auth.protected.desc', { login: chunk => <Link className="link" href={'/login'}>{chunk}</Link>, register: chunk => <Link className="link" href={'/register'}>{chunk}</Link>, })}</Text>
         </Modal>
-        <UnstyledButton className={className} onClick={handleClick} {...props}>{label}</UnstyledButton></>
-}
+        {styled ?
+            <Button variant={'base'} onClick={handleClick} disabled={disabled}>{label}</Button> :
+            <UnstyledButton onClick={handleClick} className={className}>{label}</UnstyledButton>
+        }</>
+
+
+        }
