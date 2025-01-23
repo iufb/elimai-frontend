@@ -1,6 +1,8 @@
 {
     "header": {
-        "main": "на главную",
+        "main": "Главная",
+        "fcelimai": "Fcelimai",
+        "profile": "Личный кабинет",
         "back": "назад"
     },
     "meta": {

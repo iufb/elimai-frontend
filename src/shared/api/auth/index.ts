@@ -1,10 +1,33 @@
 import { backendUrl, customFetch } from "@/shared/api";
+import { getCookie, setCookie } from "cookies-next";
 
 export const rLogin = (body: { email: string; password: string }) => {
     return customFetch({ method: "POST", path: 'login/', body: { json: body } });
 };
 
-
+export const rIsAdmin = async (token: string) => {
+    const url = `${backendUrl}/api/is-admin/`
+    try {
+        const response = await fetch(url, {
+            method: "GET", headers: {
+                'Content-type': 'application/json',
+                "authorization": `Bearer ${token}`
+            }
+        })
+        if (!response.ok) {
+            throw {
+                message: "User is not admin.",
+                status: response.status,
+                url: response.url,
+            }
+        }
+        const data = await response.json()
+        return data
+    } catch (e) {
+        console.log(e)
+        throw e
+    }
+}
 export const rSendCode = (body: { email: string, type: string }) => {
     return customFetch({ method: "POST", path: 'send-code/', body: { json: body } })
 }
@@ -24,7 +47,6 @@ export const rResetPassword = (data: {
 }
 
 export const rRefreshToken = async (refresh: string): Promise<{ access: string } | undefined> => {
-    console.log(refresh)
     const url = `${backendUrl}/api/token/refresh/`
     try {
         const response = await fetch(url, {
@@ -46,3 +68,22 @@ export const rRefreshToken = async (refresh: string): Promise<{ access: string }
         console.log(e)
     }
 }
+export const revalidateToken = async (): Promise<string | null> => {
+    try {
+        const refresh = getCookie('refresh');
+        if (!refresh) {
+            console.log('No refresh token available');
+            return null;
+        }
+        const response = await rRefreshToken(refresh as string);
+        if (response && response.access) {
+            // Optionally, store the new access token
+            setCookie('access', response.access);
+            return response.access;
+        }
+        return null;
+    } catch (error) {
+        console.log('Token revalidation error:', error);
+        return null;
+    }
+};

@@ -1,6 +1,5 @@
-import { rRefreshToken } from "@/shared/api/auth";
+import { revalidateToken } from "@/shared/api/auth";
 import { getCookie } from "cookies-next";
-import { setCookie } from "cookies-next/client";
 export const backendUrl = process.env.NEXT_PUBLIC_BACKENDURL;
 interface CRequest {
     path: string;
@@ -82,22 +81,4 @@ export const customFetch = async (params: CRequest) => {
     return handleResponse(response);
 };
 
-const revalidateToken = async (): Promise<string | null> => {
-    try {
-        const refresh = getCookie('refresh');
-        if (!refresh) {
-            console.log('No refresh token available');
-            return null;
-        }
-        const response = await rRefreshToken(refresh as string);
-        if (response && response.access) {
-            // Optionally, store the new access token
-            setCookie('access', response.access);
-            return response.access;
-        }
-        return null;
-    } catch (error) {
-        console.log('Token revalidation error:', error);
-        return null;
-    }
-};
+
