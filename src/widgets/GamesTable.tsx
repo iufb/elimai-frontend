@@ -2,7 +2,7 @@
 import { BuySubscriptionBtn } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
-import { GameStatus } from "@/shared/consts";
+import { Game, GameStatus } from "@/shared/consts";
 import { Box, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
@@ -24,39 +24,8 @@ export const GamesTable = () => {
 
 
     console.log(games)
-    const nextRows = useMemo(() =>
-        games?.filter(value => new Date(value.event_date) > new Date()).map((element, idx) => (
-            <Table.Tr bg={element.status !== GameStatus[0] ? 'gray.3' : ""} key={element.id}>
-                <Table.Td ta={'center'}>
-                    {dayjs(element.event_date).locale(locale as string).format("DD.MM.YYYY HH:mm")}
-                </Table.Td>
-                <Table.Td ta={'center'}>
-                    {locale == 'ru' ? "Елимай" : "Елімай"} <br /> {element[locale == 'ru' ? `name_ru` : 'name_kz']}
-                </Table.Td>
-                <Table.Td ta={'center'}>
-                    <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
-                </Table.Td>
-            </Table.Tr>
-        )),
-        [games, locale]
-    );
-    const prevRows = useMemo(() =>
-        games?.filter(value => new Date(value.event_date) < new Date()).map((element, idx) => (
-            <Table.Tr bg={element.status !== GameStatus[0] ? 'gray.3' : ""} key={element.id}>
-                <Table.Td ta={'center'}>
-                    {dayjs(element.event_date).locale(locale as string).format("DD.MM.YYYY HH:mm")}
-                </Table.Td>
-                <Table.Td ta={'center'}>
-                    {locale == 'ru' ? "Елимай" : "Елімай"} <br /> {element[locale == 'ru' ? `name_ru` : 'name_kz']}
-                </Table.Td>
-                <Table.Td ta={'center'}>
-                    <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
-                </Table.Td>
-            </Table.Tr>
-        )),
-        [games, locale]
-    );
-
+    const nextRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={true} />, [games, locale]);
+    const prevRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={false} />, [games, locale]);
     if (isLoading) {
         return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
@@ -84,6 +53,35 @@ export const GamesTable = () => {
         </Stack>
     );
 }
+const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string; isFuture: boolean }) => {
+    const filteredGames = useMemo(
+        () =>
+            games?.filter(game =>
+                isFuture ? new Date(game.event_date) > new Date() : new Date(game.event_date) < new Date()
+            ),
+        [games, isFuture]
+    );
+
+    const formatEventDate = (date: Date | string) =>
+        dayjs(date).locale(locale).format("DD.MM.YYYY HH:mm");
+
+    const getTeamName = (game: Game) =>
+        locale === 'ru' ? `Елимай\n${game.name_ru}` : `Елімай\n${game.name_kz}`;
+
+    return filteredGames?.map(game => (
+        <Table.Tr bg={game.status !== GameStatus[0] ? 'gray.3' : ""} key={game.id}>
+            <Table.Td ta="center">{formatEventDate(game.event_date)}</Table.Td>
+            <Table.Td ta="center">{getTeamName(game)}</Table.Td>
+            <Table.Td ta="center">
+                <BuyTicketBtn
+                    variant="base"
+                    gameId={game.id}
+                    disabled={game.status !== GameStatus[0]}
+                />
+            </Table.Td>
+        </Table.Tr>
+    ));
+};
 const CustomTable = ({ children }: { children: ReactNode }) => {
     const t = useTranslations('gamesTable')
     return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>

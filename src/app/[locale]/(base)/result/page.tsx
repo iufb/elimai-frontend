@@ -1,8 +1,8 @@
 import { ResultWindow } from "@/widgets";
-import { Box } from "@mantine/core";
+import { Center } from "@mantine/core";
 
 export default function Page() {
-    return <Box>
+    return <Center >
         <ResultWindow />
-    </Box>
+    </Center>
 }

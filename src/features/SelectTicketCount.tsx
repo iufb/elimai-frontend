@@ -1,6 +1,6 @@
 'use client'
 import { rGetUserTicketLimit } from "@/shared/api/games";
-import { Loader, Select } from "@mantine/core";
+import { Select, Skeleton } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useQuery } from "react-query";
 type valueType = { value: string, disabled: boolean }
@@ -17,7 +17,7 @@ export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCount
             return message
         }
     })
-    if (isLoading) return <Loader />
+    if (isLoading) return <Skeleton width={'100%'} height={40} />
     if (!buyed) return null
     const options = new Array(3).fill('*').map((_, idx) => {
         const value = `${idx + 1}`

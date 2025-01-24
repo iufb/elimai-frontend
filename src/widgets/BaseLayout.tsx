@@ -16,6 +16,7 @@ export function BaseLayout({ children }: { children: ReactNode }) {
         <AppShell
             header={{ height: 60 }}
             navbar={{ width: 300, breakpoint: 'md', collapsed: { desktop: true, mobile: !opened } }}
+            p={{ sm: 10, md: 0 }}
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
@@ -41,7 +42,7 @@ export function BaseLayout({ children }: { children: ReactNode }) {
             </AppShell.Navbar>
 
 
-            <AppShell.Main p={{ sm: 5, md: 0 }}>
+            <AppShell.Main >
                 {children}
                 <Links />
                 <footer>

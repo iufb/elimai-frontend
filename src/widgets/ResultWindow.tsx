@@ -1,15 +1,16 @@
 'use client'
 
 import { Link } from "@/i18n/routing"
-import { Box, Button, Center, LoadingOverlay, Stack, Text, Title } from "@mantine/core"
+import { Alert, Box, Button, Center, Group, LoadingOverlay, Stack, Text, Title } from "@mantine/core"
 import jsPDF from "jspdf"
-import { Ban, CircleHelp } from "lucide-react"
+import { BadgeCheck, Ban, CircleHelp, } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams, useSearchParams } from "next/navigation"
 import QRCode from 'qrcode'
 import { useEffect, useState } from "react"
 
-import { rGetTicket } from "@/shared/api/games"
+import { BuyTicketBtn } from "@/features/BuyTicketBtn"
+import { rGetTickets } from "@/shared/api/games"
 import dayjs from "dayjs"
 import { useQuery } from "react-query"
 import "/public/Nunito-Bold-normal.js"
@@ -18,15 +19,11 @@ export const ResultWindow = () => {
     const t = useTranslations()
     const query = useSearchParams()
     const order = query.get('order')
+    const gameId = query.get('event_id')
     const { locale } = useParams()
-    const { data, isFetching, error, refetch } = useQuery({
+    const { data: tickets, isFetching, error, refetch } = useQuery({
         queryKey: ['getTicket'], queryFn: async () => {
-            const data = await rGetTicket(order)
-            const dateStr = dayjs(data.date).format('DD.MM.YYYY')
-            const timeStr = dayjs(data.date).format('HH:mm')
-            const enemy = locale == 'ru' ? data.name_ru : data.name_kz
-            createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
-
+            const data = await rGetTickets(order)
             return data
         },
         enabled: !!order,
@@ -77,15 +74,38 @@ export const ResultWindow = () => {
 
         templateImage.src = '/4.PNG'; // Path to the template image
     };
+    const buy = () => {
+        if (tickets) {
+            tickets.forEach(data => {
+                const dateStr = dayjs(data.date).format('DD.MM.YYYY')
+                const timeStr = dayjs(data.date).format('HH:mm')
+                const enemy = locale == 'ru' ? data.name_ru : data.name_kz
+                createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
+            })
+        }
+    }
 
     return <Box h={'50svh'}>
         <Center h={'100%'} pos={'relative'}>
             {isFetching ? <LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isFetching} zIndex={1000} /> :
                 !error ?
                     <Stack>
-                        <NotDownloadedView refetch={() => {
-                            refetch()
-                        }} />
+                        <Alert
+                            icon={<BadgeCheck />}
+                            p={10}
+                            variant="filled" color="elimai.2" title={t('result.success.message')}
+                        >
+                            <span>{t('result.success.count', { count: tickets?.length })}</span>
+                            <ul>
+                                <li>{t('result.success.instructions')}</li>
+                                <li>{t('result.success.additional_info.email')}</li>
+                                <li>{t('result.success.additional_info.account')}</li>
+                            </ul>
+                        </Alert>
+                        <Group grow>
+                            <Button variant="base" onClick={buy}>{t('result.download')}</Button>
+                            {gameId && <BuyTicketBtn again variant="outline" gameId={parseInt(gameId)} />}
+                        </Group>
                     </Stack>
                     :
                     <Stack align="center">
