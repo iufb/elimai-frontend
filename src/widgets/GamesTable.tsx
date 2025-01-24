@@ -28,10 +28,10 @@ export const GamesTable = () => {
         games?.filter(value => new Date(value.event_date) > new Date()).map((element, idx) => (
             <Table.Tr bg={element.status !== GameStatus[0] ? 'gray.3' : ""} key={element.id}>
                 <Table.Td ta={'center'}>
-                    {dayjs(element.event_date).locale(locale as string).format("DD-MM-YYYY HH:mm")}
+                    {dayjs(element.event_date).locale(locale as string).format("DD.MM.YYYY HH:mm")}
                 </Table.Td>
                 <Table.Td ta={'center'}>
-                    {locale == 'ru' ? "Елимай" : "Елімай"} - {element[locale == 'ru' ? `name_ru` : 'name_kz']}
+                    {locale == 'ru' ? "Елимай" : "Елімай"} <br /> {element[locale == 'ru' ? `name_ru` : 'name_kz']}
                 </Table.Td>
                 <Table.Td ta={'center'}>
                     <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
@@ -44,10 +44,10 @@ export const GamesTable = () => {
         games?.filter(value => new Date(value.event_date) < new Date()).map((element, idx) => (
             <Table.Tr bg={element.status !== GameStatus[0] ? 'gray.3' : ""} key={element.id}>
                 <Table.Td ta={'center'}>
-                    {dayjs(element.event_date).locale(locale as string).format("DD-MM-YYYY HH:mm")}
+                    {dayjs(element.event_date).locale(locale as string).format("DD.MM.YYYY HH:mm")}
                 </Table.Td>
                 <Table.Td ta={'center'}>
-                    {locale == 'ru' ? "Елимай" : "Елімай"} - {element[locale == 'ru' ? `name_ru` : 'name_kz']}
+                    {locale == 'ru' ? "Елимай" : "Елімай"} <br /> {element[locale == 'ru' ? `name_ru` : 'name_kz']}
                 </Table.Td>
                 <Table.Td ta={'center'}>
                     <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
@@ -86,7 +86,7 @@ export const GamesTable = () => {
 }
 const CustomTable = ({ children }: { children: ReactNode }) => {
     const t = useTranslations('gamesTable')
-    return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={500} w={'100%'}>
+    return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
         <Table stripedColor="slate.2" withTableBorder fz={{
             xs: 14, md: 16, lg: 18
         }} >

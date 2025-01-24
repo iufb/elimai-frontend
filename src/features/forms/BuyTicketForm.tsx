@@ -1,7 +1,8 @@
 'use client'
+import { SelectTicketCount } from "@/features/SelectTicketCount";
 import { rBuyTicket, rGetTicketsCount } from "@/shared/api/games";
 import { showErrorNotification } from "@/shared/notifications";
-import { Box, Button, Input, Select, Stack, Text } from "@mantine/core";
+import { Box, Button, Input, Stack, Text } from "@mantine/core";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -65,11 +66,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
                 control={control}
                 name="count"
                 rules={{ required: t('errors.required') }}
-                render={({ field: { value, onChange } }) =>
-                    <Select
-                        checkIconPosition="right"
-                        comboboxProps={{ transitionProps: { transition: 'pop', duration: 200, }, shadow: 'xl' }}
-                        label={t('buy.form.select')} placeholder={t('buy.form.select')} data={['1', '2', '3']} value={value} onChange={value => onChange(value)} />}
+                render={({ field: { value, onChange } }) => <SelectTicketCount value={value} onChange={onChange} gameId={gameId} />}
             />
             <Text c="slate.6">{t('buy.form.count', { count })} </Text>
             <Button

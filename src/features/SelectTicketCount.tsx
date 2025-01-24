@@ -1,0 +1,33 @@
+'use client'
+import { rGetUserTicketLimit } from "@/shared/api/games";
+import { Loader, Select } from "@mantine/core";
+import { useTranslations } from "next-intl";
+import { useQuery } from "react-query";
+type valueType = { value: string, disabled: boolean }
+interface SelectTicketCountProps {
+    gameId: number;
+    value: string;
+    onChange: (value: string | null) => void
+}
+export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCountProps) => {
+    const t = useTranslations()
+    const { data: buyed, isLoading } = useQuery({
+        queryKey: [`user limit ${gameId}`], queryFn: async () => {
+            const { message } = await rGetUserTicketLimit(gameId)
+            return message
+        }
+    })
+    if (isLoading) return <Loader />
+    if (!buyed) return null
+    const options = new Array(3).fill('*').map((_, idx) => {
+        const value = `${idx + 1}`
+        return { value: value, label: value, disabled: idx + 1 + parseInt(buyed) >= 4 }
+    })
+    return <Select
+        checkIconPosition="right"
+        disabled={buyed == '3'}
+        comboboxProps={{ transitionProps: { transition: 'pop', duration: 200, }, shadow: 'xl' }}
+        label={t('buy.form.select')} placeholder={t('buy.form.select')} data={options} value={value} onChange={onChange} />
+}
+
+

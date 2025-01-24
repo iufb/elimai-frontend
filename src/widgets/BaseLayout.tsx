@@ -41,7 +41,7 @@ export function BaseLayout({ children }: { children: ReactNode }) {
             </AppShell.Navbar>
 
 
-            <AppShell.Main>
+            <AppShell.Main p={{ sm: 5, md: 0 }}>
                 {children}
                 <Links />
                 <footer>
