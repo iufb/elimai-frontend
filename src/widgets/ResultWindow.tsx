@@ -2,18 +2,15 @@
 
 import { Link } from "@/i18n/routing"
 import { Alert, Box, Button, Center, Group, LoadingOverlay, Stack, Text, Title } from "@mantine/core"
-import jsPDF from "jspdf"
 import { BadgeCheck, Ban, CircleHelp, } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams, useSearchParams } from "next/navigation"
-import QRCode from 'qrcode'
 import { useEffect, useState } from "react"
 
+import { DownloadTicketsBtn } from "@/features"
 import { BuyTicketBtn } from "@/features/BuyTicketBtn"
 import { rGetTickets } from "@/shared/api/games"
-import dayjs from "dayjs"
 import { useQuery } from "react-query"
-import "/public/Nunito-Bold-normal.js"
 
 export const ResultWindow = () => {
     const t = useTranslations()
@@ -29,61 +26,6 @@ export const ResultWindow = () => {
         enabled: !!order,
         refetchOnWindowFocus: false
     })
-    console.log(error, "ERROR")
-    const createTicket = ({ enemy, date, time, qrValue }: { enemy: string, date: string, time: string, qrValue: string }) => {
-        const elimai = locale == 'ru' ? "Елимай" : "Елімай"
-        const doc = new jsPDF(); // Default is 'portrait', 'px' unit
-        const qrImage = new Image();
-        const templateImage = new Image();
-
-        QRCode.toDataURL(qrValue, function (err, url) {
-            if (err) {
-                console.error("Error generating QR code:", err);
-                return;
-            }
-            qrImage.src = url; // Set QR code image source
-        });
-
-        templateImage.onload = function () {
-            // Get page dimensions
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const pageHalf = pageWidth / 2
-            const qrDim = 100
-            doc.setFont('Nunito-Bold', 'normal')
-            // Add the template image, scaled to fill the entire page
-            doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
-            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 30) / 2, qrDim, qrDim); // Bottom-right corner
-
-            doc.setFontSize(20)
-            doc.setTextColor('#697BD3')
-            doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 65, { align: 'center' })
-            doc.text(elimai.toUpperCase(), pageHalf + pageHalf / 2.8, pageHeight / 2 + 65, { align: 'center' })
-
-            doc.setFontSize(18)
-            doc.setTextColor('#fff')
-            doc.text(date, pageHalf, pageHeight / 2 + 83, { align: 'center' })
-
-            doc.setFontSize(26)
-            doc.setTextColor('#ECE720')
-            doc.text(time, pageHalf, pageHeight / 2 + 103, { align: 'center' })
-
-            // Save the PDF
-            doc.save(`Билет ${elimai} - ${enemy}.pdf`);
-        };
-
-        templateImage.src = '/4.PNG'; // Path to the template image
-    };
-    const buy = () => {
-        if (tickets) {
-            tickets.forEach(data => {
-                const dateStr = dayjs(data.date).format('DD.MM.YYYY')
-                const timeStr = dayjs(data.date).format('HH:mm')
-                const enemy = locale == 'ru' ? data.name_ru : data.name_kz
-                createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
-            })
-        }
-    }
 
     return <Box h={'50svh'}>
         <Center h={'100%'} pos={'relative'}>
@@ -103,7 +45,7 @@ export const ResultWindow = () => {
                             </ul>
                         </Alert>
                         <Group grow>
-                            <Button variant="base" onClick={buy}>{t('result.download')}</Button>
+                            {tickets && <DownloadTicketsBtn tickets={tickets} />}
                             {gameId && <BuyTicketBtn again variant="outline" gameId={parseInt(gameId)} />}
                         </Group>
                     </Stack>

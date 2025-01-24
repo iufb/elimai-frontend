@@ -23,7 +23,6 @@ export const GamesTable = () => {
     const t = useTranslations('gamesTable')
 
 
-    console.log(games)
     const nextRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={true} />, [games, locale]);
     const prevRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={false} />, [games, locale]);
     if (isLoading) {

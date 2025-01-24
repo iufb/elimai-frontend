@@ -1,0 +1,76 @@
+'use client'
+import { Ticket } from "@/shared/types"
+
+import { Button } from "@mantine/core"
+
+import dayjs from "dayjs"
+import jsPDF from "jspdf"
+import { useParams } from "next/navigation"
+import "/public/Nunito-Bold-normal.js"
+
+import { useTranslations } from "next-intl"
+import QrCode from "qrcode"
+
+interface DownloadTicketsBtnProps {
+    tickets: Ticket[]
+}
+export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
+    const { locale } = useParams()
+    const createTicket = ({ enemy, date, time, qrValue }: { enemy: string, date: string, time: string, qrValue: string }) => {
+        const elimai = locale == 'ru' ? "Елимай" : "Елімай"
+        const doc = new jsPDF(); // Default is 'portrait', 'px' unit
+        const qrImage = new Image();
+        const templateImage = new Image();
+
+        QrCode.toDataURL(qrValue, function (err, url) {
+            if (err) {
+                console.error("Error generating QR code:", err);
+                return;
+            }
+            qrImage.src = url; // Set QR code image source
+        });
+
+        templateImage.onload = function () {
+            // Get page dimensions
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const pageHalf = pageWidth / 2
+            const qrDim = 100
+            doc.setFont('Nunito-Bold', 'normal')
+            // Add the template image, scaled to fill the entire page
+            doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
+            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 30) / 2, qrDim, qrDim); // Bottom-right corner
+
+            doc.setFontSize(20)
+            doc.setTextColor('#697BD3')
+            doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 65, { align: 'center' })
+            doc.text(elimai.toUpperCase(), pageHalf + pageHalf / 2.8, pageHeight / 2 + 65, { align: 'center' })
+
+            doc.setFontSize(18)
+            doc.setTextColor('#fff')
+            doc.text(date, pageHalf, pageHeight / 2 + 83, { align: 'center' })
+
+            doc.setFontSize(26)
+            doc.setTextColor('#ECE720')
+            doc.text(time, pageHalf, pageHeight / 2 + 103, { align: 'center' })
+
+            // Save the PDF
+            doc.save(`Билет ${elimai} - ${enemy}.pdf`);
+        };
+
+        templateImage.src = '/4.PNG'; // Path to the template image
+    };
+    const download = () => {
+        if (tickets) {
+            tickets.forEach(data => {
+                const dateStr = dayjs(data.date).format('DD.MM.YYYY')
+                const timeStr = dayjs(data.date).format('HH:mm')
+                const enemy = locale == 'ru' ? data.name_ru : data.name_kz
+                createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
+            })
+        }
+    }
+
+    const t = useTranslations()
+    return <Button variant="base" onClick={download}>{t('result.download')}</Button>
+}
