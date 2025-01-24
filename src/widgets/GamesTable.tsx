@@ -3,8 +3,9 @@ import { BuySubscriptionBtn } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
 import { Game, GameStatus } from "@/shared/consts";
-import { Box, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
+import { Alert, Box, Center, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
 import dayjs from "dayjs";
+import { AlertTriangle, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { ReactNode, useMemo } from "react";
@@ -26,9 +27,22 @@ export const GamesTable = () => {
     const nextRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={true} />, [games, locale]);
     const prevRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={false} />, [games, locale]);
     if (isLoading) {
-        return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
+        return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
-    if (!games) { return <Title ta={'center'} my={100} c={'red.5'} order={3}>Ошибка загрузки...</Title> }
+    if (!games) {
+        return <Center h={250} maw={1200} mx={'auto'}><Alert
+            icon={<CircleX />}
+            variant="filled" color="red.4" my={20} title={t('error.title')}
+        >
+            {t('error.desc')}
+        </Alert></Center>
+    }
+    if (games.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
+        icon={<AlertTriangle />}
+        variant="filled" color="elimai.4" my={20} title={t('notFound.title')}
+    >
+        {t('notFound.desc')}
+    </Alert></Center>
 
 
     return (

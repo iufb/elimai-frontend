@@ -28,27 +28,33 @@ async function adminMiddleware(req: NextRequest) {
 }
 
 function authMiddleware(req: NextRequest) {
-    // const token = req.cookies.get("access");
-    // const { pathname } = req.nextUrl;
-    //
-    // console.log(pathname)
-    //
-    // if (pathname == `/profile` && !token) {
-    //     return NextResponse.redirect(new URL(`/admin/login`, req.url))
-    // }
-    // if (pathname == `/admin/login` && token) {
-    //     return NextResponse.redirect(new URL(`/admin`, req.url))
-    // }
-    //
-    // return NextResponse.next();
+    const token = req.cookies.get("access");
+    const { pathname } = req.nextUrl;
+    const locale = pathname.split("/")[1];
+
+    if (pathname == `/${locale}/profile` && !token) {
+        return NextResponse.redirect(new URL(`/${locale}/login`, req.url))
+    }
+
+    if ((pathname == `/${locale}/login` || pathname == `/${locale}/register`) && token) {
+        return NextResponse.redirect(new URL(`/`, req.url))
+    }
+
+    return NextResponse.next();
 
 }
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
+    const locale = pathname.split("/")[1];
+    console.log(pathname)
     if (pathname.startsWith("/admin")) {
         return adminMiddleware(req);
     }
+    if (pathname.startsWith(`/${locale}/profile`)) {
+        return authMiddleware(req);
+    }
+
 
     return intlMiddleware(req);
 }

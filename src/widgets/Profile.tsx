@@ -1,7 +1,8 @@
 'use client'
 import { DownloadTicketsBtn } from "@/features"
 import { rGetTicketsByUser } from "@/shared/api/games"
-import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core"
+import { Alert, Box, Center, LoadingOverlay, Stack, Table, Title } from "@mantine/core"
+import { AlertTriangle, CircleX } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
 import { useMemo } from "react"
@@ -33,9 +34,23 @@ export const Profile = () => {
         )
     }, [tickets])
     if (isLoading) {
-        return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
+        return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
-    if (!tickets) { return <Title ta={'center'} my={100} c={'red.5'} order={3}>Ошибка загрузки...</Title> }
+    if (!tickets) {
+        return <Center h={250} maw={1200} mx={'auto'}><Alert
+            icon={<CircleX />}
+            variant="filled" color="red.4" my={20} title={t('errorTickets.title')}
+        >
+            {t('errorTickets.desc')}
+        </Alert></Center>
+    }
+    if (tickets.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
+        icon={<AlertTriangle />}
+        variant="filled" color="elimai.4" my={20} title={t('notFoundTickets.title')}
+    >
+        {t('notFoundTickets.desc')}
+    </Alert></Center>
+
     return <Stack align="center" my={20} >
         <Title order={4}>{t('buyedTickets')}</Title>
         <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>

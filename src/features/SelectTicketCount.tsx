@@ -1,6 +1,6 @@
 'use client'
 import { rGetUserTicketLimit } from "@/shared/api/games";
-import { Select, Skeleton } from "@mantine/core";
+import { Select, Skeleton, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useQuery } from "react-query";
 type valueType = { value: string, disabled: boolean }
@@ -19,11 +19,23 @@ export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCount
     })
     if (isLoading) return <Skeleton width={'100%'} height={40} />
     if (!buyed) return null
+    if (buyed == '3') {
+        return <Text c="rose.5">{t('buy.max')}</Text>
+    }
     const options = new Array(3).fill('*').map((_, idx) => {
         const value = `${idx + 1}`
         return { value: value, label: value, disabled: idx + 1 + parseInt(buyed) >= 4 }
     })
     return <Select
+        styles={{
+            dropdown: {
+                border: '1px solid var(--mantine-color-slate-4)'
+            },
+            option: {
+                backgroundColor: "var(--mantine-color-slate-3)",
+                margin: '5px 0'
+            }
+        }}
         checkIconPosition="right"
         disabled={buyed == '3'}
         comboboxProps={{ transitionProps: { transition: 'pop', duration: 200, }, shadow: 'xl' }}

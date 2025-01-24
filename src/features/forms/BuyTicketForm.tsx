@@ -38,7 +38,6 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
     const count = 7000 - (ticketsCount ? parseInt(ticketsCount.message) : 0)
     const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {
-        console.log(data)
         mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId }, locale: locale as string })
 
     };
