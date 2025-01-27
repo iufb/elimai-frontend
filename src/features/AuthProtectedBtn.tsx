@@ -17,22 +17,6 @@ export function AuthProtectedButton({ label, className, action, variant, disable
     const [opened, { open, close }] = useDisclosure(false);
     const { isLogged } = useAuth()
     const handleClick = () => {
-        // const token = getCookie('access')
-        // if (!token) {
-        //     open()
-        //     return;
-        // }
-        // customFetch({ method: "GET", path: "is-admin/" }).then(() => {
-        //     action()
-        // }).catch(e => {
-        //     if (e.status == 403) {
-        //         action()
-        //     } else {
-        //         open()
-        //     }
-        // })
-        //
-        console.log('clicked')
         if (isLogged) {
             action()
             return

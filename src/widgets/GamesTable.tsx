@@ -1,9 +1,9 @@
 'use client'
-import { BuySubscriptionBtn } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
+import { Link } from "@/i18n/routing";
 import { rGetGames } from "@/shared/api/games";
 import { Game, GameStatus } from "@/shared/consts";
-import { Alert, Box, Center, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
+import { Alert, Box, Button, Center, Group, LoadingOverlay, Stack, Table, Tabs, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { AlertTriangle, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -21,7 +21,7 @@ export const GamesTable = () => {
     })
     const { locale } = useParams()
 
-    const t = useTranslations('gamesTable')
+    const t = useTranslations()
 
 
     const nextRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={true} />, [games, locale]);
@@ -48,13 +48,15 @@ export const GamesTable = () => {
     return (
         <Stack align="center" my={20} >
             <Group justify="space-between" w={'100%'} maw={1200}>
-                <Title order={2}>{t('title')}</Title>
-                <BuySubscriptionBtn />
+                <Title visibleFrom="md" order={2}>{t('title')}</Title>
+                <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/'} component={Link}>
+                    {t('buy.subBtn')}
+                </Button>
             </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >
-                    <Tabs.Tab value="first">{t('tabs.next')}</Tabs.Tab>
-                    <Tabs.Tab value="second">{t('tabs.prev')}</Tabs.Tab>
+                    <Tabs.Tab value="first">{t('gamesTable.tabs.next')}</Tabs.Tab>
+                    <Tabs.Tab value="second">{t('gamesTable.tabs.prev')}</Tabs.Tab>
                 </Tabs.List>
                 <Tabs.Panel value="first">
                     <CustomTable>{nextRows}</CustomTable>
@@ -78,9 +80,13 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
     const formatEventDate = (date: Date | string) =>
         dayjs(date).locale(locale).format("DD.MM.YYYY HH:mm");
 
-    const getTeamName = (game: Game) =>
-        locale === 'ru' ? `Елимай  ${game.name_ru}` : `Елімай  ${game.name_kz}`;
-
+    const getTeamName = (game: Game) => {
+        const elimai = locale == 'ru' ? 'Елимай' : "Елімай"
+        const enemy = locale == 'ru' ? game.name_ru : game.name_kz
+        return <Box>
+            {elimai} <Text visibleFrom="md" component="span">—</Text>  {enemy}
+        </Box>
+    }
     return filteredGames?.map(game => (
         <Table.Tr bg={game.status !== GameStatus[0] ? 'gray.3' : ""} key={game.id}>
             <Table.Td ta="center">{formatEventDate(game.event_date)}</Table.Td>

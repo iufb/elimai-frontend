@@ -31,8 +31,8 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Image src='/logonew.png' width={50} height={50} alt='e-logo' />
                         <Group ml="xl" gap={0} visibleFrom="md" align='flex-end'>
-                            <Link href={'/'} className={clsx(classes.control, path == '/' && classes.active)}>{t('header.main')}</Link>
                             <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
+                            <Link href={'/'} className={clsx(classes.control, path == '/' && classes.active)}>{t('header.main')}</Link>
                             <AuthProtectedButton className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
                                 router.push('/profile')
                             }} />
@@ -43,9 +43,12 @@ export function BaseLayout({ children }: { children: ReactNode }) {
             </AppShell.Header>
 
             <AppShell.Navbar py="md" px={4}>
-                <Link href={'/'} className={classes.control}>{t('header.main')}</Link>
                 <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
-                <Link href={'/profile'} className={classes.control}>{t('header.profile')}</Link>
+                <Link href={'/'} className={classes.control}>{t('header.main')}</Link>
+                <AuthProtectedButton className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
+                    router.push('/profile')
+                }} />
+
             </AppShell.Navbar>
 
 

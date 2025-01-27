@@ -2,6 +2,7 @@
 
 import { Link, useRouter } from "@/i18n/routing";
 import { rLogin } from "@/shared/api/auth";
+import { useAuth } from "@/shared/context";
 import { showErrorNotification } from "@/shared/notifications";
 import { Button, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
 import { deleteCookie, setCookie } from "cookies-next/client";
@@ -15,6 +16,7 @@ type LoginDto = {
 export const LoginForm = () => {
     const t = useTranslations()
     const router = useRouter()
+    const { logged } = useAuth()
     const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
         mutationFn: rLogin,
@@ -22,6 +24,7 @@ export const LoginForm = () => {
             setCookie('access', data.access)
             setCookie('refresh', data.refresh)
             setCookie('email', data.email)
+            if (logged) logged()
             router.replace('/')
         },
         onError: (e) => {

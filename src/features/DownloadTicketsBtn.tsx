@@ -16,26 +16,31 @@ interface DownloadTicketsBtnProps {
 }
 export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
     const { locale } = useParams()
-    const createTicket = ({ enemy, date, time, qrValue }: { enemy: string, date: string, time: string, qrValue: string }) => {
+    const createTicket = (tickets: Ticket[]) => {
         const elimai = locale == 'ru' ? "Елимай" : "Елімай"
+        const enemy = locale == 'ru' ? tickets[0].name_ru : tickets[0].name_kz
         const doc = new jsPDF(); // Default is 'portrait', 'px' unit
-        const qrImage = new Image();
         const templateImage = new Image();
 
-        QrCode.toDataURL(qrValue, function (err, url) {
-            if (err) {
-                console.error("Error generating QR code:", err);
-                return;
-            }
-            qrImage.src = url; // Set QR code image source
-        });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const pageHalf = pageWidth / 2
+        const qrDim = 100
 
-        templateImage.onload = function () {
+        const generatePage = (ticket: Ticket, idx: number) => {
+            const dateStr = dayjs(ticket.date).format('DD.MM.YYYY')
+            const timeStr = dayjs(ticket.date).format('HH:mm')
+
+            const qrImage = new Image();
+            QrCode.toDataURL(ticket.code, function (err, url) {
+                if (err) {
+                    console.error("Error generating QR code:", err);
+                    return;
+                }
+                qrImage.src = url; // Set QR code image source
+            });
+
             // Get page dimensions
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const pageHalf = pageWidth / 2
-            const qrDim = 100
             doc.setFont('Nunito-Bold', 'normal')
             // Add the template image, scaled to fill the entire page
             doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
@@ -48,11 +53,21 @@ export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
 
             doc.setFontSize(18)
             doc.setTextColor('#fff')
-            doc.text(date, pageHalf, pageHeight / 2 + 83, { align: 'center' })
+            doc.text(dateStr, pageHalf, pageHeight / 2 + 83, { align: 'center' })
 
             doc.setFontSize(26)
             doc.setTextColor('#ECE720')
-            doc.text(time, pageHalf, pageHeight / 2 + 103, { align: 'center' })
+            doc.text(timeStr, pageHalf, pageHeight / 2 + 103, { align: 'center' })
+
+            if (idx < tickets.length - 1) {
+                doc.addPage()
+            }
+
+        }
+        templateImage.onload = function () {
+            tickets.forEach((ticket, idx) => {
+                generatePage(ticket, idx)
+            })
 
             // Save the PDF
             doc.save(`Билет ${elimai} - ${enemy}.pdf`);
@@ -62,12 +77,7 @@ export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
     };
     const download = () => {
         if (tickets) {
-            tickets.forEach(data => {
-                const dateStr = dayjs(data.date).format('DD.MM.YYYY')
-                const timeStr = dayjs(data.date).format('HH:mm')
-                const enemy = locale == 'ru' ? data.name_ru : data.name_kz
-                createTicket({ enemy, date: dateStr, time: timeStr, qrValue: data.code })
-            })
+            createTicket(tickets)
         }
     }
 
