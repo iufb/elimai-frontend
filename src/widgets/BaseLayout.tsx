@@ -1,7 +1,6 @@
 'use client'
 import { AuthProtectedButton } from '@/features';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { useAuth } from '@/shared/hooks';
 import { LocaleSwitcher } from '@/widgets/LocaleSwitcher';
 import { AppShell, Burger, Center, Flex, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
