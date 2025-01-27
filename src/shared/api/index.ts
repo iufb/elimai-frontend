@@ -36,12 +36,13 @@ export const customFetch = async (params: CRequest) => {
     if (params.body?.json) {
         headers.set("Content-Type", "application/json");
     }
-    const token = getCookie("token");
+    const token = getCookie("access");
     if (token) {
         headers.set("Authorization", `Bearer ${token}`);
     }
 
     const executeFetch = async () => {
+        console.log(headers)
         return fetch(url, {
             method: params.method,
             body,

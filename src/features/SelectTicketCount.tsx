@@ -32,7 +32,7 @@ export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCount
                 border: '1px solid var(--mantine-color-slate-4)'
             },
             option: {
-                backgroundColor: "var(--mantine-color-slate-3)",
+                backgroundColor: "var(--mantine-color-slate-2)",
                 margin: '5px 0'
             }
         }}

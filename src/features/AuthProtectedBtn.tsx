@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from "@/i18n/routing"
-import { useAuth } from "@/shared/hooks"
+import { useAuth } from "@/shared/context"
 import { Button, Modal, Text, Title, UnstyledButton } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useTranslations } from "next-intl"
@@ -17,6 +17,21 @@ export function AuthProtectedButton({ label, className, action, variant, disable
     const [opened, { open, close }] = useDisclosure(false);
     const { isLogged } = useAuth()
     const handleClick = () => {
+        // const token = getCookie('access')
+        // if (!token) {
+        //     open()
+        //     return;
+        // }
+        // customFetch({ method: "GET", path: "is-admin/" }).then(() => {
+        //     action()
+        // }).catch(e => {
+        //     if (e.status == 403) {
+        //         action()
+        //     } else {
+        //         open()
+        //     }
+        // })
+        //
         console.log('clicked')
         if (isLogged) {
             action()

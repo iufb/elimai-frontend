@@ -17,8 +17,8 @@ export const rGetGames = (): Promise<Game[]> => {
     return customFetch({ method: "GET", path: "get-events" });
 };
 
-export const rBuyTicket = (body: { data: any, locale: string }): Promise<any> => {
-    return customFetch({ method: "POST", path: "create-ticket/", body: { json: body.data }, query: { LOCALE: body.locale } });
+export const rBuyTicket = (body: { data: any }): Promise<any> => {
+    return customFetch({ method: "POST", path: "create-ticket/", body: { json: body.data } });
 };
 
 export const rGetTickets = (order: string | null): Promise<Ticket[]> => {

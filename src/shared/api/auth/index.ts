@@ -62,7 +62,6 @@ export const rRefreshToken = async (refresh: string): Promise<{ access: string }
             }
         }
         const data = await response.json()
-        console.log(data)
         return data
     } catch (e) {
         console.log(e)

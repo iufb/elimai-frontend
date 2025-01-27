@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from "@/i18n/routing"
-import { Alert, Box, Button, Center, Group, LoadingOverlay, Stack, Text, Title } from "@mantine/core"
+import { Alert, Box, Button, Center, Group, Loader, Stack, Text, Title } from "@mantine/core"
 import { BadgeCheck, Ban, CircleHelp, } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams, useSearchParams } from "next/navigation"
@@ -26,10 +26,9 @@ export const ResultWindow = () => {
         enabled: !!order,
         refetchOnWindowFocus: false
     })
-
     return <Box h={'50svh'}>
         <Center h={'100%'} pos={'relative'}>
-            {isFetching ? <LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isFetching} zIndex={1000} /> :
+            {isFetching ? <Loader color="elimai.6" /> :
                 !error ?
                     <Stack>
                         <Alert
