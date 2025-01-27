@@ -18,12 +18,24 @@ export const rGetGames = (): Promise<Game[]> => {
 };
 
 export const rBuyTicket = (body: { data: any, locale: string }): Promise<any> => {
-    return customFetch({ method: "POST", path: "create-ticket/", body: { json: body.data }, query: { locale: body.locale } });
+    return customFetch({ method: "POST", path: "create-ticket/", body: { json: body.data }, query: { LOCALE: body.locale } });
 };
 
-export const rGetTicket = (order: string | null): Promise<Ticket> => {
+export const rGetTickets = (order: string | null): Promise<Ticket[]> => {
     return customFetch({ method: "GET", path: "get-ticket/", query: { ORDER: order } });
 };
+export const rGetTicketsByUser = (): Promise<Ticket[]> => {
+    return customFetch({ method: "GET", path: "get-tickets-by-user/" });
+};
+
+
+export const rGetTicketsCount = (gameId: number): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "get-tickets-count/", query: { EVENT_ID: gameId } });
+};
+export const rGetUserTicketLimit = (gameId: number): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "event-limit/", query: { EVENT_ID: gameId } });
+};
+
 
 
 

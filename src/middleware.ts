@@ -1,35 +1,61 @@
 import { routing } from "@/i18n/routing";
+import { rIsAdmin } from "@/shared/api/auth";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
-// Locale middleware setup
 const intlMiddleware = createMiddleware(routing);
 
-// Authentication and redirection middleware
-function authMiddleware(req: NextRequest) {
-    const token = req.cookies.get("token");
+async function adminMiddleware(req: NextRequest) {
+    const token = req.cookies.get("access");
     const { pathname } = req.nextUrl;
-    if (pathname == `/admin` && !token) {
+    if (!token) {
+        if (pathname !== '/admin/login') {
+            return NextResponse.redirect(new URL(`/admin/login`, req.url))
+        } else {
+            return NextResponse.next();
+        }
+    }
+    const isAdmin = await rIsAdmin(token.value).catch(e => {
+        console.log(e.status, "STATUS")
+    })
+    if (!isAdmin && pathname == '/admin') {
         return NextResponse.redirect(new URL(`/admin/login`, req.url))
     }
-    if (pathname == `/admin/login` && token) {
+    if (isAdmin && pathname == '/admin/login') {
         return NextResponse.redirect(new URL(`/admin`, req.url))
     }
-
-    // If no redirect is needed, allow the request to proceed
     return NextResponse.next();
 }
 
+function authMiddleware(req: NextRequest) {
+    const token = req.cookies.get("access");
+    const { pathname } = req.nextUrl;
+    const locale = pathname.split("/")[1];
+
+    if (pathname == `/${locale}/profile` && !token) {
+        return NextResponse.redirect(new URL(`/${locale}/login`, req.url))
+    }
+
+    if ((pathname == `/${locale}/login` || pathname == `/${locale}/register`) && token) {
+        return NextResponse.redirect(new URL(`/`, req.url))
+    }
+
+    return NextResponse.next();
+
+}
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
-    console.log(req.referrer)
-    // Skip the locale middleware for admin routes
-    if (pathname.startsWith("/admin") || pathname.startsWith("/admin/login")) {
+    const locale = pathname.split("/")[1];
+    console.log(pathname)
+    if (pathname.startsWith("/admin")) {
+        return adminMiddleware(req);
+    }
+    if (pathname.startsWith(`/${locale}/profile`)) {
         return authMiddleware(req);
     }
 
-    // For all other routes, apply the intlMiddleware
+
     return intlMiddleware(req);
 }
 

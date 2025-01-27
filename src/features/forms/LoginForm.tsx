@@ -1,64 +1,76 @@
 "use client";
 
+import { Link, useRouter } from "@/i18n/routing";
 import { rLogin } from "@/shared/api/auth";
-import { notificationErrors } from "@/shared/consts";
 import { showErrorNotification } from "@/shared/notifications";
-import { Button, Stack, TextInput, Title } from "@mantine/core";
-import { deleteCookie } from "cookies-next";
-import { setCookie } from "cookies-next/client";
-import { useRouter } from "next/navigation";
+import { Button, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
+import { deleteCookie, setCookie } from "cookies-next/client";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-
+type LoginDto = {
+    email: string;
+    password: string;
+}
 export const LoginForm = () => {
-    const router = useRouter();
-    const { mutate, isLoading, isError } = useMutation({
+    const t = useTranslations()
+    const router = useRouter()
+    const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
         mutationFn: rLogin,
         onSuccess: (data) => {
-            setCookie('token', data.token, { maxAge: 60 * 60 })
-            router.replace('/admin')
+            setCookie('access', data.access)
+            setCookie('refresh', data.refresh)
+            setCookie('email', data.email)
+            router.replace('/')
         },
         onError: (e) => {
             console.log(e)
-            showErrorNotification(notificationErrors.login);
+            showErrorNotification({ title: t('errors.auth.login.title'), message: t('errors.auth.login.message') });
         }
     });
 
-    const onSubmit = (data: { username: string; password: string }) => {
+    const onSubmit = (data: LoginDto) => {
         console.log(data)
-        mutate(data);
-        deleteCookie("token");
+        login(data)
+        deleteCookie('access')
+        deleteCookie('refresh')
     };
     const {
         handleSubmit,
         register,
+        watch,
         getValues,
         formState: { errors },
-    } = useForm<{
-        username: string;
-        password: string;
-    }>();
-    return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-        >
-            <Stack miw={350} w={'100%'} gap={10}>
-                <Title order={3}>Авторизация</Title>
-                <TextInput
-                    error={errors["username"]?.message}
-                    {...register("username", { required: "Обязательное поле" })}
-                    placeholder={'Логин'}
-                />
-                <TextInput
-                    type="password"
-                    error={errors["password"]?.message}
-                    {...register("password", { required: "Обязательное поле" })}
-                    placeholder={'Пароль'}
-                />
-                <Button variant="base" disabled={isLoading} type="submit" >Войти</Button>
+    } = useForm<LoginDto>({ mode: 'onChange', defaultValues: { email: "bashirov3ld2@gmail.com", password: "19931991iuN" } });
 
-            </Stack>
-        </form>
-    );
-};
+    const password = watch('password', '')
+    return <form
+        onSubmit={handleSubmit(onSubmit)}
+    >
+        <Stack px={20} py={10} miw={350} w={'100%'} gap={10} >
+            <Title order={3}>{t('auth.login.title')}</Title>
+            <TextInput
+                type="email"
+                label={t('auth.email')}
+                error={errors["email"]?.message}
+                {...register("email", { required: t('errors.required') })}
+                placeholder={t('auth.email')}
+            />
+            <PasswordInput
+                type="password"
+                label={t('auth.password')}
+                error={errors["password"]?.message}
+                {...register("password", {
+                    required: t('errors.required'),
+                })}
+                placeholder={t('auth.password')}
+            />
+            <Text size="sm" c={'slate.6'} >{t.rich('auth.login.restore', { a: (chunk) => <Link className="link" href={'/restore'}>{chunk}</Link> })}</Text>
+            <Text size="sm" c={'slate.6'} >{t.rich('auth.login.register', { a: (chunk) => <Link className="link" href={'/register'}>{chunk}</Link> })}</Text>
+            <Button variant="base" type="submit" >{t('auth.login.btn')}</Button>
+
+        </Stack>
+    </form>
+
+}

@@ -1,11 +1,14 @@
 'use client'
+import { BuySubscriptionBtn } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { rGetGames } from "@/shared/api/games";
-import { GameStatus } from "@/shared/consts";
-import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { Game, GameStatus } from "@/shared/consts";
+import { Alert, Box, Center, Group, LoadingOverlay, Stack, Table, Tabs, Title } from "@mantine/core";
 import dayjs from "dayjs";
+import { AlertTriangle, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { ReactNode, useMemo } from "react";
 import { useQuery } from "react-query";
 
 
@@ -20,41 +23,96 @@ export const GamesTable = () => {
 
     const t = useTranslations('gamesTable')
 
+
+    const nextRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={true} />, [games, locale]);
+    const prevRows = useMemo(() => <GameRows games={games} locale={locale as string} isFuture={false} />, [games, locale]);
     if (isLoading) {
-        return <Box w={'100%'} h={400} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
+        return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
-    if (!games) { return <Title ta={'center'} my={100} c={'red.5'} order={3}>Ошибка загрузки...</Title> }
+    if (!games) {
+        return <Center h={250} maw={1200} mx={'auto'}><Alert
+            icon={<CircleX />}
+            variant="filled" color="red.4" my={20} title={t('error.title')}
+        >
+            {t('error.desc')}
+        </Alert></Center>
+    }
+    if (games.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
+        icon={<AlertTriangle />}
+        variant="filled" color="elimai.4" my={20} title={t('notFound.title')}
+    >
+        {t('notFound.desc')}
+    </Alert></Center>
 
-
-
-    const rows = games.map((element, idx) => (
-        <Table.Tr key={element.id}>
-            <Table.Td ta={'center'}>{dayjs(element.event_date).locale(locale as string).format("DD-MM-YYYY HH:mm")}</Table.Td>
-            <Table.Td ta={'center'}>{locale == 'ru' ? "Елимай" : "Елімай"} - {element[locale == 'ru' ? `name_ru` : 'name_kz']}</Table.Td>
-            <Table.Td ta={'center'}>
-                <BuyTicketBtn gameId={element.id} disabled={element.status !== GameStatus[0]} />
-            </Table.Td>
-        </Table.Tr>
-    ));
 
     return (
         <Stack align="center" my={20} >
-            <Title order={2}>Матчи</Title>
-            <Table.ScrollContainer mx={'auto'} maw={1200} minWidth={500} w={'100%'}>
-                <Table striped stripedColor="slate.2" withTableBorder fz={{
-                    xs: 14, md: 16, lg: 18
-                }} >
-                    <Table.Thead >
-                        <Table.Tr>
-                            <Table.Th ta={'center'}>{t('date')}</Table.Th>
-                            <Table.Th ta={'center'}>{t('game')}</Table.Th>
-                            <Table.Th ta={'center'}>{t('buy')}</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
-                    <Table.Caption>{t('caption')}</Table.Caption>
-                </Table>
-            </Table.ScrollContainer>
+            <Group justify="space-between" w={'100%'} maw={1200}>
+                <Title order={2}>{t('title')}</Title>
+                <BuySubscriptionBtn />
+            </Group>
+            <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
+                <Tabs.List grow justify="center" >
+                    <Tabs.Tab value="first">{t('tabs.next')}</Tabs.Tab>
+                    <Tabs.Tab value="second">{t('tabs.prev')}</Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panel value="first">
+                    <CustomTable>{nextRows}</CustomTable>
+                </Tabs.Panel>
+                <Tabs.Panel value="second">
+                    <CustomTable>{prevRows}</CustomTable>
+                </Tabs.Panel>
+            </Tabs>
         </Stack>
     );
+}
+const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string; isFuture: boolean }) => {
+    const filteredGames = useMemo(
+        () =>
+            games?.filter(game =>
+                isFuture ? new Date(game.event_date) > new Date() : new Date(game.event_date) < new Date()
+            ),
+        [games, isFuture]
+    );
+
+    const formatEventDate = (date: Date | string) =>
+        dayjs(date).locale(locale).format("DD.MM.YYYY HH:mm");
+
+    const getTeamName = (game: Game) =>
+        locale === 'ru' ? `Елимай\n${game.name_ru}` : `Елімай\n${game.name_kz}`;
+
+    return filteredGames?.map(game => (
+        <Table.Tr bg={game.status !== GameStatus[0] ? 'gray.3' : ""} key={game.id}>
+            <Table.Td ta="center">{formatEventDate(game.event_date)}</Table.Td>
+            <Table.Td ta="center">{getTeamName(game)}</Table.Td>
+            <Table.Td ta="center">
+                <BuyTicketBtn
+                    variant="base"
+                    gameId={game.id}
+                    disabled={game.status !== GameStatus[0]}
+                />
+            </Table.Td>
+        </Table.Tr>
+    ));
+};
+const CustomTable = ({ children }: { children: ReactNode }) => {
+    const t = useTranslations('gamesTable')
+    return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
+        <Table stripedColor="slate.2" withTableBorder fz={{
+            xs: 14, md: 16, lg: 18
+        }} >
+            <Table.Thead >
+                <Table.Tr>
+                    <Table.Th ta={'center'}>{t('date')}</Table.Th>
+                    <Table.Th ta={'center'}>{t('game')}</Table.Th>
+                    <Table.Th ta={'center'}>{t('buy')}</Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+                {children}
+            </Table.Tbody>
+            <Table.Caption>{t('caption')}</Table.Caption>
+        </Table>
+    </Table.ScrollContainer>
+
 }
