@@ -1,4 +1,5 @@
 'use client'
+import { AuthProvider } from "@/shared/context";
 import { DatesProvider } from "@mantine/dates";
 import 'dayjs/locale/ru';
 import { ReactNode, useState } from "react";
@@ -20,6 +21,6 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
 
 
 export const Providers = ({ children }: { children: ReactNode }) => {
-    return <DatesProvider settings={{ locale: 'ru' }}><QueryProvider>{children}</QueryProvider></DatesProvider>
+    return <AuthProvider><DatesProvider settings={{ locale: 'ru' }}><QueryProvider>{children}</QueryProvider></DatesProvider></AuthProvider>
 
 }

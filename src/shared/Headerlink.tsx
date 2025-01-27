@@ -9,7 +9,6 @@ export const HeaderLink = () => {
     const router = useRouter()
     const pathname = usePathname()
     const t = useTranslations()
-    console.log(pathname)
     const onClick = () => {
         if (pathname == '/') {
             router.push('https://fcelimai.kz/')

@@ -47,7 +47,6 @@ export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     const locale = pathname.split("/")[1];
-    console.log(pathname)
     if (pathname.startsWith("/admin")) {
         return adminMiddleware(req);
     }

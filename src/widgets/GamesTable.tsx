@@ -79,7 +79,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
         dayjs(date).locale(locale).format("DD.MM.YYYY HH:mm");
 
     const getTeamName = (game: Game) =>
-        locale === 'ru' ? `Елимай\n${game.name_ru}` : `Елімай\n${game.name_kz}`;
+        locale === 'ru' ? `Елимай  ${game.name_ru}` : `Елімай  ${game.name_kz}`;
 
     return filteredGames?.map(game => (
         <Table.Tr bg={game.status !== GameStatus[0] ? 'gray.3' : ""} key={game.id}>
