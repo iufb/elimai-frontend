@@ -17,7 +17,7 @@ export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCount
             return message
         }
     })
-    if (isLoading) return <Skeleton width={'100%'} height={40} />
+    if (isLoading) return <Skeleton width={'100%'} height={60} />
     if (!buyed) return null
     if (buyed == '3') {
         return <Text c="rose.5">{t('buy.max')}</Text>

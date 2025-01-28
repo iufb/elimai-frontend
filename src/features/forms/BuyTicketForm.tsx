@@ -37,7 +37,7 @@ export const BuyTicketForm = ({ gameId, limit }: { gameId: number, limit: number
     });
     const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
     const count = limit - (ticketsCount ? parseInt(ticketsCount.message) : 0)
-    const Count = isLoading ? <Skeleton w={'100%'} h={30} /> :
+    const Count = isLoading ? <Skeleton w={'100%'} h={24} /> :
         <Text c="slate.6">{t('buy.form.count', { count })} </Text>
     const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {
         mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId, LOCALE: locale as string } })

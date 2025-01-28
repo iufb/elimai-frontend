@@ -6,14 +6,15 @@ import { Button, Modal, Text, Title, UnstyledButton } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useTranslations } from "next-intl"
 
-interface AuthProtectedButtonProps {
+interface AuthProtectedButtonProps<T> {
     label: string
     action: () => void
     variant?: string
     className?: string
     disabled?: boolean
+    btnProps?: T
 }
-export function AuthProtectedButton({ label, className, action, variant, disabled, ...props }: AuthProtectedButtonProps) {
+export function AuthProtectedButton<T>({ label, btnProps, className, action, variant, disabled, ...props }: AuthProtectedButtonProps<T>) {
     const [opened, { open, close }] = useDisclosure(false);
     const { isLogged } = useAuth()
     const handleClick = () => {
@@ -30,9 +31,7 @@ export function AuthProtectedButton({ label, className, action, variant, disable
             <Text>{t.rich('auth.protected.desc', { login: chunk => <Link className="link" href={'/login'}>{chunk}</Link>, register: chunk => <Link className="link" href={'/register'}>{chunk}</Link>, })}</Text>
         </Modal>
         {variant ?
-            <Button variant={variant} onClick={handleClick} disabled={disabled}>{label}</Button> :
-            <UnstyledButton onClick={handleClick} className={className}>{label}</UnstyledButton>
+            <Button variant={variant} onClick={handleClick} disabled={disabled} {...btnProps}>{label}</Button> :
+            <UnstyledButton onClick={handleClick} className={className} {...btnProps}>{label}</UnstyledButton>
         }</>
-
-
-        }
+}

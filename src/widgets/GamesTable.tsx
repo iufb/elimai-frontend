@@ -1,9 +1,10 @@
 'use client'
+import { AuthProtectedButton } from "@/features";
 import { BuyTicketBtn } from "@/features/BuyTicketBtn";
-import { Link } from "@/i18n/routing";
+import { useRouter } from "@/i18n/routing";
 import { rGetGames } from "@/shared/api/games";
 import { Game, GameStatus } from "@/shared/consts";
-import { Alert, Box, Button, Center, Group, LoadingOverlay, Stack, Table, Tabs, Text, Title } from "@mantine/core";
+import { Alert, Box, ButtonProps, Center, Group, LoadingOverlay, Stack, Table, Tabs, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { AlertTriangle, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -43,15 +44,21 @@ export const GamesTable = () => {
     >
         {t('gamesTable.notFound.desc')}
     </Alert></Center>
-
-
     return (
         <Stack align="center" my={20} >
             <Group justify="space-between" w={'100%'} maw={1200}>
                 <Title visibleFrom="md" order={2}>{t('gamesTable.title')}</Title>
-                <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/'} component={Link}>
-                    {t('buy.subBtn')}
-                </Button>
+                <AuthProtectedButton<ButtonProps>
+                    label={t('buy.subBtn')}
+                    variant="alert"
+                    btnProps={{ w: { sm: '100%', md: 'auto' } }}
+                    action={() => {
+                        useRouter().push('/subscription')
+                    }}
+                />
+                {/* <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/subscription'} component={Link}> */}
+                {/*     {t('buy.subBtn')} */}
+                {/* </Button> */}
             </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >

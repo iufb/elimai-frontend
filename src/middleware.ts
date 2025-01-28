@@ -32,7 +32,7 @@ function authMiddleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
     const locale = pathname.split("/")[1];
 
-    if (pathname == `/${locale}/profile` && !token) {
+    if ((pathname == `/${locale}/profile` || pathname == `/${locale}/subscription`) && !token) {
         return NextResponse.redirect(new URL(`/${locale}/login`, req.url))
     }
 
@@ -40,7 +40,7 @@ function authMiddleware(req: NextRequest) {
         return NextResponse.redirect(new URL(`/`, req.url))
     }
 
-    return NextResponse.next();
+    return intlMiddleware(req);
 
 }
 export function middleware(req: NextRequest) {
@@ -50,7 +50,7 @@ export function middleware(req: NextRequest) {
     if (pathname.startsWith("/admin")) {
         return adminMiddleware(req);
     }
-    if (pathname.startsWith(`/${locale}/profile`)) {
+    if (pathname.startsWith(`/${locale}`)) {
         return authMiddleware(req);
     }
 
