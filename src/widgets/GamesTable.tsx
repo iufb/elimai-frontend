@@ -32,23 +32,23 @@ export const GamesTable = () => {
     if (!games) {
         return <Center h={250} maw={1200} mx={'auto'}><Alert
             icon={<CircleX />}
-            variant="filled" color="red.4" my={20} title={t('error.title')}
+            variant="filled" color="red.4" my={20} title={t('gamesTable.error.title')}
         >
-            {t('error.desc')}
+            {t('gamesTable.error.desc')}
         </Alert></Center>
     }
     if (games.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
         icon={<AlertTriangle />}
-        variant="filled" color="elimai.4" my={20} title={t('notFound.title')}
+        variant="filled" color="elimai.4" my={20} title={t('gamesTable.notFound.title')}
     >
-        {t('notFound.desc')}
+        {t('gamesTable.notFound.desc')}
     </Alert></Center>
 
 
     return (
         <Stack align="center" my={20} >
             <Group justify="space-between" w={'100%'} maw={1200}>
-                <Title visibleFrom="md" order={2}>{t('title')}</Title>
+                <Title visibleFrom="md" order={2}>{t('gamesTable.title')}</Title>
                 <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/'} component={Link}>
                     {t('buy.subBtn')}
                 </Button>

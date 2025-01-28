@@ -5,4 +5,5 @@ export { GamesTable } from './GamesTable';
 export { LocaleSwitcher } from './LocaleSwitcher';
 export { Profile } from './Profile';
 export { ResultWindow } from './ResultWindow';
+export { TicketsView } from "./TicketsView";
 

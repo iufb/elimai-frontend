@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { DownloadTicketsBtn } from "@/features"
 import { BuyTicketBtn } from "@/features/BuyTicketBtn"
 import { rGetTickets } from "@/shared/api/games"
+import { TicketsView } from "@/widgets/TicketsView"
 import { useQuery } from "react-query"
 
 export const ResultWindow = () => {
@@ -26,8 +27,8 @@ export const ResultWindow = () => {
         enabled: !!order,
         refetchOnWindowFocus: false
     })
-    return <Box h={'50svh'}>
-        <Center h={'100%'} pos={'relative'}>
+    return <Box mt={20} mih={'50svh'}>
+        <Center w={'100%'} h={'100%'} pos={'relative'}>
             {isFetching ? <Loader color="elimai.6" /> :
                 !error ?
                     <Stack>
@@ -47,6 +48,7 @@ export const ResultWindow = () => {
                             {tickets && <DownloadTicketsBtn tickets={tickets} />}
                             {gameId && <BuyTicketBtn again variant="outline" gameId={parseInt(gameId)} />}
                         </Group>
+                        {tickets && <TicketsView tickets={tickets} />}
                     </Stack>
                     :
                     <Stack align="center">

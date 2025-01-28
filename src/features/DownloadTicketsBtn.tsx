@@ -10,12 +10,14 @@ import "/public/Nunito-Bold-normal.js"
 
 import { useTranslations } from "next-intl"
 import QrCode from "qrcode"
+import { useState } from "react"
 
 interface DownloadTicketsBtnProps {
     tickets: Ticket[]
 }
 export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
     const { locale } = useParams()
+    const [src, setSrc] = useState('')
     const createTicket = (tickets: Ticket[]) => {
         const elimai = locale == 'ru' ? "Елимай" : "Елімай"
         const enemy = locale == 'ru' ? tickets[0].name_ru : tickets[0].name_kz
@@ -37,15 +39,12 @@ export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
                     console.error("Error generating QR code:", err);
                     return;
                 }
-                qrImage.src = url; // Set QR code image source
+                qrImage.src = url;
             });
 
-            // Get page dimensions
             doc.setFont('Nunito-Bold', 'normal')
-            // Add the template image, scaled to fill the entire page
             doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
-            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 30) / 2, qrDim, qrDim); // Bottom-right corner
-
+            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 30) / 2, qrDim, qrDim);
             doc.setFontSize(20)
             doc.setTextColor('#697BD3')
             doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 65, { align: 'center' })
