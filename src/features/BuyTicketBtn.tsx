@@ -6,16 +6,17 @@ import { useDisclosure } from "@mantine/hooks";
 import { useTranslations } from "next-intl";
 interface BuyTicketBtnProps extends ButtonProps {
     gameId: number
+    limit: number
     variant: string
     again?: boolean
 }
-export const BuyTicketBtn = ({ again = false, variant, gameId, disabled, ...props }: BuyTicketBtnProps) => {
+export const BuyTicketBtn = ({ again = false, variant, gameId, limit, disabled, ...props }: BuyTicketBtnProps) => {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations()
     return (
         <>
             <Modal centered size={'lg'} opened={opened} onClose={close} title={t('buy.ticketModal')}>
-                <BuyTicketForm gameId={gameId} />
+                <BuyTicketForm gameId={gameId} limit={limit} />
             </Modal>
             <AuthProtectedButton disabled={disabled} variant={variant} label={
                 again ? t('buy.again') : t('buy.btn')

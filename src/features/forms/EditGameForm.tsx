@@ -3,7 +3,7 @@ import { rEditGame } from "@/shared/api/games";
 import { Game, GameStatus, notificationErrors, notificationSuccess } from "@/shared/consts";
 import { showErrorNotification, showSuccessNotification } from "@/shared/notifications";
 import { queryClient } from "@/shared/Providers";
-import { Button, Select, Stack, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, Stack, TextInput } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -53,6 +53,15 @@ export const EditGameForm = ({ game, close }: { game: Game, close: () => void })
                 placeholder={'Противник KZ'}
                 label={'Противник KZ'}
             />
+            <Controller
+                control={control}
+                name="ticket_count"
+                rules={{ required: "Обязательное поле" }}
+                render={({ field: { value, onChange } }) =>
+                    <NumberInput label="Лимит билетов" placeholder="Максимальное количество билетов" value={value} onChange={onChange} />
+                }
+            />
+
             <Controller
                 control={control}
                 name="event_date"

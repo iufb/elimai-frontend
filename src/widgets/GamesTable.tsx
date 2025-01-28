@@ -73,7 +73,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
         () =>
             games?.filter(game =>
                 isFuture ? new Date(game.event_date) > new Date() : new Date(game.event_date) < new Date()
-            ),
+            ).sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()),
         [games, isFuture]
     );
 
@@ -93,6 +93,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
             <Table.Td ta="center">{getTeamName(game)}</Table.Td>
             <Table.Td ta="center">
                 <BuyTicketBtn
+                    limit={game.ticket_count}
                     variant="base"
                     gameId={game.id}
                     disabled={game.status !== GameStatus[0]}

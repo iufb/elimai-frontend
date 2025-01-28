@@ -2,7 +2,7 @@
 import { SelectTicketCount } from "@/features/SelectTicketCount";
 import { rBuyTicket, rGetTicketsCount } from "@/shared/api/games";
 import { showErrorNotification } from "@/shared/notifications";
-import { Box, Button, Input, Stack, Text } from "@mantine/core";
+import { Box, Button, Input, Skeleton, Stack, Text } from "@mantine/core";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useMutation, useQuery } from "react-query";
 
-export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
+export const BuyTicketForm = ({ gameId, limit }: { gameId: number, limit: number }) => {
     const t = useTranslations()
     const { locale } = useParams()
     const router = useRouter()
@@ -36,7 +36,9 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
         }
     });
     const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
-    const count = 7000 - (ticketsCount ? parseInt(ticketsCount.message) : 0)
+    const count = limit - (ticketsCount ? parseInt(ticketsCount.message) : 0)
+    const Count = isLoading ? <Skeleton w={'100%'} h={30} /> :
+        <Text c="slate.6">{t('buy.form.count', { count })} </Text>
     const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {
         mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId, LOCALE: locale as string } })
 
@@ -67,7 +69,7 @@ export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
                 rules={{ required: t('errors.required') }}
                 render={({ field: { value, onChange } }) => <SelectTicketCount value={value} onChange={onChange} gameId={gameId} />}
             />
-            <Text c="slate.6">{t('buy.form.count', { count })} </Text>
+            {Count}
             <Button
                 loading={mutateLoading || isLoading}
                 variant="base"
