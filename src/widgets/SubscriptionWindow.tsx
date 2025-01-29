@@ -1,13 +1,15 @@
 'use client'
 import { useRouter } from "@/i18n/routing"
+import { rBuyTicket, rGetSubscriptionCount } from "@/shared/api/games"
 import { showErrorNotification } from "@/shared/notifications"
-import { Alert, Box, Button, Input, Stack, Text } from "@mantine/core"
+import { Alert, Box, Button, Input, Skeleton, Stack, Text } from "@mantine/core"
+import { getCookie } from "cookies-next"
 import { AlertTriangle } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { IMaskInput } from "react-imask"
-import { useMutation } from "react-query"
+import { useMutation, useQuery } from "react-query"
 export const SubscriptionWindow = () => {
     const t = useTranslations()
     return <Stack maw={600}>
@@ -44,11 +46,11 @@ const Form = () => {
     } = useForm<{ tel: string }>();
     const { mutate, isLoading: mutateLoading, isError } = useMutation({
         mutationKey: [`buySub`],
-        mutationFn: async () => { },
+        mutationFn: rBuyTicket,
         onSuccess: (data) => {
-            // const { url } = JSON.parse(data)
-            // console.log(data)
-            // router.push(url)
+            const { url } = JSON.parse(data)
+            console.log(data)
+            router.push(url)
         },
         onError: (e) => {
             console.log(e)
@@ -56,13 +58,13 @@ const Form = () => {
 
         }
     });
-    // const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
-    // const count = limit - (ticketsCount ? parseInt(ticketsCount.message) : 0)
-    // const Count = isLoading ? <Skeleton w={'100%'} h={30} /> :
-    //     <Text c="slate.6">{t('buy.form.count', { count })} </Text>
+    const { data: subCount, isLoading } = useQuery({ queryKey: [`sub count`], queryFn: rGetSubscriptionCount })
+    const count = 1000 - (subCount ? parseInt(subCount.message) : 0)
+    const Count = isLoading ? <Skeleton w={'100%'} h={30} /> :
+        <Text c="slate.6">{t('buy.subCount', { count })} </Text>
 
     const onSubmit: SubmitHandler<{ tel: string }> = (data) => {
-        // mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'),  LOCALE: locale as string } })
+        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: 1, EVENT_ID: 1, LOCALE: locale as string, TYPE: 'Aboniment' } })
 
     };
     return <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,11 +88,11 @@ const Form = () => {
 
                     /></Box>} />
 
-            {/* {Count} */}
+            {Count}
             <Button
-                // loading={mutateLoading || isLoading}
+                loading={mutateLoading || isLoading}
                 variant="base"
-                // disabled={mutateLoading || isLoading || count == 0}
+                disabled={mutateLoading || isLoading || count == 0}
                 type="submit" >{t('buy.form.btn')}</Button>
         </Stack>
     </form>

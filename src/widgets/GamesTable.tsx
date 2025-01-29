@@ -14,6 +14,7 @@ import { useQuery } from "react-query";
 
 
 export const GamesTable = () => {
+    const router = useRouter()
     const { data: games, isLoading, isError } = useQuery({
         queryKey: ['games'], queryFn: async () => {
             const data = await rGetGames()
@@ -45,7 +46,7 @@ export const GamesTable = () => {
         {t('gamesTable.notFound.desc')}
     </Alert></Center>
     return (
-        <Stack align="center" my={20} >
+        <Stack p={{ xs: 5, sm: 10, xl: 0 }} align="center" my={20} >
             <Group justify="space-between" w={'100%'} maw={1200}>
                 <Title visibleFrom="md" order={2}>{t('gamesTable.title')}</Title>
                 <AuthProtectedButton<ButtonProps>
@@ -53,12 +54,9 @@ export const GamesTable = () => {
                     variant="alert"
                     btnProps={{ w: { sm: '100%', md: 'auto' } }}
                     action={() => {
-                        useRouter().push('/subscription')
+                        router.push('/subscription')
                     }}
                 />
-                {/* <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/subscription'} component={Link}> */}
-                {/*     {t('buy.subBtn')} */}
-                {/* </Button> */}
             </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >

@@ -40,7 +40,7 @@ export const BuyTicketForm = ({ gameId, limit }: { gameId: number, limit: number
     const Count = isLoading ? <Skeleton w={'100%'} h={24} /> :
         <Text c="slate.6">{t('buy.form.count', { count })} </Text>
     const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {
-        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId, LOCALE: locale as string } })
+        mutate({ data: { TELEPHONE: data.tel.replace(/[()\s-]/g, ""), EMAIL: getCookie('email'), COUNT: parseInt(data.count), EVENT_ID: gameId, LOCALE: locale as string, TYPE: 'Ticket' } })
 
     };
     return <form onSubmit={handleSubmit(onSubmit)}>

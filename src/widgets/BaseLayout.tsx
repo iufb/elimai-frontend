@@ -2,7 +2,7 @@
 import { AuthProtectedButton } from '@/features';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { LocaleSwitcher } from '@/widgets/LocaleSwitcher';
-import { AppShell, Burger, Center, Flex, Group, Text } from '@mantine/core';
+import { AppShell, Burger, Center, Flex, Group, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { clsx } from 'clsx';
 import { useTranslations } from 'next-intl';
@@ -23,7 +23,6 @@ export function BaseLayout({ children }: { children: ReactNode }) {
         <AppShell
             header={{ height: 60 }}
             navbar={{ width: 300, breakpoint: 'md', collapsed: { desktop: true, mobile: !opened } }}
-            p={{ sm: 10, md: 0 }}
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
@@ -56,11 +55,14 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                 {children}
                 <Links />
                 <footer>
-                    <Text py={10} fz={14} ta={'center'} c={'gray.4'}>© {new Date().getFullYear()} {t('footer')}</Text>
+                    <Stack maw={1200} mx={'auto'}>
+                        <Text maw={1200} c={'gray.4'} component={Link} href={'/policy'}>{t('policy.title')}</Text>
+                        <Text py={10} fz={14} ta={'center'} c={'gray.4'}>© {new Date().getFullYear()} {t('footer')}</Text>
+                    </Stack>
                 </footer>
 
             </AppShell.Main>
-        </AppShell>
+        </AppShell >
     );
 }
 const links =
@@ -77,10 +79,13 @@ const Links = () => {
         {links.map(link =>
             <Center pos={'relative'} w={120} h={120} key={link.href} style={{
                 border: '1px solid var(--mantine-color-gray-3)',
-                borderRadius: 100
+                borderRadius: 100,
             }}>
-                <Link style={{ margin: 10 }} href={link.href} target='_blank'>
-                    <Image fill src={link.img} alt='logo' />
+                <Link style={{
+                    margin: 10,
+                    position: 'relative'
+                }} href={link.href} target='_blank'  >
+                    <Image sizes='(max-width: 768px) 120px, (max-width: 1200px) 100px' width={120} height={120} src={link.img} alt='logo' />
                 </Link></Center>)}
     </Flex>
 

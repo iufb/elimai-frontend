@@ -12,12 +12,37 @@ import { useTranslations } from "next-intl"
 import QrCode from "qrcode"
 import { useState } from "react"
 
-interface DownloadTicketsBtnProps {
+interface DownloadBtnProps {
     tickets: Ticket[]
+    type: 'ticket' | 'sub'
 }
-export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
+export const DownloadBtn = ({ type, tickets }: DownloadBtnProps) => {
     const { locale } = useParams()
     const [src, setSrc] = useState('')
+    const createSub = (code: string) => {
+        const doc = new jsPDF(); // Default is 'portrait', 'px' unit
+        const templateImage = new Image();
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const pageHalf = pageWidth / 2
+        const qrDim = 75
+        const qrImage = new Image();
+
+        templateImage.onload = () => {
+            QrCode.toDataURL(code, function (err, url) {
+                if (err) {
+                    console.error("Error generating QR code:", err);
+                    return;
+                }
+                qrImage.src = url;
+            });
+            doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
+            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight / 2) - (qrDim / 2), qrDim, qrDim);
+            doc.save(`Абонемент Eлимай.pdf`);
+        }
+        templateImage.src = '/2.PNG'; // Path to the template image
+    }
     const createTicket = (tickets: Ticket[]) => {
         const elimai = locale == 'ru' ? "Елимай" : "Елімай"
         const enemy = locale == 'ru' ? tickets[0].name_ru : tickets[0].name_kz
@@ -76,7 +101,7 @@ export const DownloadTicketsBtn = ({ tickets }: DownloadTicketsBtnProps) => {
     };
     const download = () => {
         if (tickets) {
-            createTicket(tickets)
+            type == 'ticket' ? createTicket(tickets) : createSub(tickets[0].code)
         }
     }
 

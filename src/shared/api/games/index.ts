@@ -11,6 +11,10 @@ export const rEditGame = (body: Game) => {
 export const rDeleteGame = (id: number) => {
     return customFetch({ method: "DELETE", path: `events/${id}/` });
 };
+export const rGetGame = (id: number) => {
+    return customFetch({ method: "GET", path: `events/${id}/` });
+};
+
 
 
 export const rGetGames = (): Promise<Game[]> => {
@@ -24,6 +28,10 @@ export const rBuyTicket = (body: { data: any }): Promise<any> => {
 export const rGetTickets = (order: string | null): Promise<Ticket[]> => {
     return customFetch({ method: "GET", path: "get-ticket/", query: { ORDER: order } });
 };
+export const rGetSub = (order: string | null): Promise<Ticket[]> => {
+    return customFetch({ method: "GET", path: "get-aboniment/", query: { ORDER: order } });
+};
+
 export const rGetTicketsByUser = (): Promise<Ticket[]> => {
     return customFetch({ method: "GET", path: "get-tickets-by-user/" });
 };
@@ -32,6 +40,10 @@ export const rGetTicketsByUser = (): Promise<Ticket[]> => {
 export const rGetTicketsCount = (gameId: number): Promise<{ message: string }> => {
     return customFetch({ method: "GET", path: "get-tickets-count/", query: { EVENT_ID: gameId } });
 };
+export const rGetSubscriptionCount = (): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "get-aboniment-count/" });
+};
+
 export const rGetUserTicketLimit = (gameId: number): Promise<{ message: string }> => {
     return customFetch({ method: "GET", path: "event-limit/", query: { EVENT_ID: gameId } });
 };
