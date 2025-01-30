@@ -9,7 +9,7 @@ interface CRequest {
     body?: { json?: unknown; multipart?: Record<string, string | Blob> };
 }
 
-export const customFetch = async (params: CRequest) => {
+export async function customFetch<T>(params: CRequest): Promise<T> {
     const url = new URL(`/api/${params.path}`, backendUrl);
 
     if (params.query) {
