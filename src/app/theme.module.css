@@ -7,6 +7,8 @@
 }
 
 .button {
+    box-sizing: border-box;
+
     &[data-variant="base"] {
         background-color: var(--mantine-color-elimai-6);
         color: var(--mantine-color-white);

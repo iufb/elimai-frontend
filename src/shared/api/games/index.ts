@@ -1,6 +1,6 @@
 import { customFetch } from "@/shared/api";
 import { Game, GameDTO } from "@/shared/consts";
-import { Ticket } from "@/shared/types";
+import { AdminTicket, Ticket } from "@/shared/types";
 
 export const rAddGame = (body: GameDTO) => {
     return customFetch({ method: "POST", path: "events/", body: { json: body } });
@@ -25,6 +25,12 @@ export const rBuyTicket = (body: { data: any }): Promise<any> => {
     return customFetch({ method: "POST", path: "create-ticket/", body: { json: body.data } });
 };
 
+export const rCreateAdminTicket = (body: { data: any }): Promise<AdminTicket> => {
+    return customFetch({ method: "POST", path: "tickets/", body: { json: body.data } });
+};
+export const rCreateAdminSub = (body: { data: any }): Promise<AdminTicket> => {
+    return customFetch({ method: "POST", path: "aboniments/", body: { json: body.data } });
+};
 export const rGetTickets = (order: string | null): Promise<Ticket[]> => {
     return customFetch({ method: "GET", path: "get-ticket/", query: { ORDER: order } });
 };
@@ -35,6 +41,11 @@ export const rGetSub = (order: string | null): Promise<Ticket[]> => {
 export const rGetTicketsByUser = (): Promise<Ticket[]> => {
     return customFetch({ method: "GET", path: "get-tickets-by-user/" });
 };
+
+export const rGetSubByUser = (): Promise<Ticket> => {
+    return customFetch({ method: "GET", path: "get-aboniment-by-user/" });
+};
+
 
 
 export const rGetTicketsCount = (gameId: number): Promise<{ message: string }> => {

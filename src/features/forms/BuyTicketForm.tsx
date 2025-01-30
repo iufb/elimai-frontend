@@ -10,7 +10,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useMutation, useQuery } from "react-query";
 
-export const BuyTicketForm = ({ gameId, limit }: { gameId: number, limit: number }) => {
+export const BuyTicketForm = ({ gameId }: { gameId: number }) => {
     const t = useTranslations()
     const { locale } = useParams()
     const router = useRouter()
@@ -36,7 +36,7 @@ export const BuyTicketForm = ({ gameId, limit }: { gameId: number, limit: number
         }
     });
     const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
-    const count = limit - (ticketsCount ? parseInt(ticketsCount.message) : 0)
+    const count = ticketsCount ? parseInt(ticketsCount.message) : 0
     const Count = isLoading ? <Skeleton w={'100%'} h={24} /> :
         <Text c="slate.6">{t('buy.form.count', { count })} </Text>
     const onSubmit: SubmitHandler<{ tel: string, count: string }> = (data) => {

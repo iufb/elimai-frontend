@@ -1,12 +1,15 @@
 'use client'
 import { DeleteGameBtn, EditGameBtn } from "@/features";
-import { rGetGames } from "@/shared/api/games";
-import { Box, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { rCreateAdminSub, rCreateAdminTicket, rGetGames } from "@/shared/api/games";
+import { Game, notificationErrors } from "@/shared/consts";
+import { useCreatePdf } from "@/shared/hooks";
+import { showErrorNotification } from "@/shared/notifications";
+import { GameStatus } from "@/shared/types";
+import { Box, Button, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import { deleteCookie } from "cookies-next";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useQuery } from "react-query";
-
+import { useMutation, useQuery } from "react-query";
 export const AdminGamesTable = () => {
     const router = useRouter()
     const { data: games, isLoading, isError } = useQuery({
@@ -35,6 +38,10 @@ export const AdminGamesTable = () => {
                 {element.status}
             </Table.Td>
             <Table.Td ta={'center'}>
+                <CreateAdminTicketBtn game={element} />
+            </Table.Td>
+
+            <Table.Td ta={'center'}>
                 <EditGameBtn game={element} />
             </Table.Td>
             <Table.Td ta={'center'}>
@@ -46,6 +53,7 @@ export const AdminGamesTable = () => {
     return (
         <Stack align="center" my={20} >
             <Title order={2}>Матчи</Title>
+            <CreateAdminSubBtn />
             <Table.ScrollContainer minWidth={500} w={'100%'}>
                 <Table miw={390} fz={{
                     xs: 14, md: 16, lg: 18
@@ -56,6 +64,7 @@ export const AdminGamesTable = () => {
                             <Table.Th ta={'center'}>Противник RU</Table.Th>
                             <Table.Th ta={'center'}>Противник KZ</Table.Th>
                             <Table.Th ta={'center'}>Статус</Table.Th>
+                            <Table.Th ta={'center'}>Создать билет</Table.Th>
                             <Table.Th ta={'center'}>Изменить</Table.Th>
                             <Table.Th ta={'center'}>Удалить</Table.Th>
                         </Table.Tr>
@@ -66,4 +75,38 @@ export const AdminGamesTable = () => {
             </Table.ScrollContainer>
         </Stack>
     );
+}
+const CreateAdminTicketBtn = ({ game }: { game: Game }) => {
+    const { createTicket } = useCreatePdf()
+    const { mutate: create, isLoading, isError } = useMutation({
+        mutationKey: [`admin-ticket ${game.id}`], mutationFn: rCreateAdminTicket, onSuccess: (data) => {
+            createTicket([{ code: data.code, date: game.event_date, name_ru: game.name_ru, name_kz: game.name_kz, status: data.status }])
+        }, onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.create)
+        }
+    })
+
+    return <Button loading={isLoading} onClick={() => create({ data: { order: '000001', event: game.id, email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(game.event_date).format("YYYY-MM-DD"), status: game.status, psign: 'none', code: Date.now() } })}>
+        Создать билет
+    </Button>
+
+
+}
+const CreateAdminSubBtn = () => {
+    const { createSub } = useCreatePdf()
+    const { mutate: create, isLoading, isError } = useMutation({
+        mutationKey: [`admin-ticketsub`], mutationFn: rCreateAdminSub, onSuccess: (data) => {
+            createSub(data.code)
+        }, onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.create)
+        }
+    })
+
+    return <Button variant="alert" loading={isLoading} onClick={() => create({ data: { order: '000001', event: '0', email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(new Date()).format("YYYY-MM-DD"), status: GameStatus[0], psign: 'none', code: Date.now() } })}>
+        Создать Абонемент
+    </Button>
+
+
 }

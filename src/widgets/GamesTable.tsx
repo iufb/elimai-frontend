@@ -57,6 +57,9 @@ export const GamesTable = () => {
                         router.push('/subscription')
                     }}
                 />
+                {/* <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/subscription'} component={Link}> */}
+                {/*     {t('buy.subBtn')} */}
+                {/* </Button> */}
             </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >
@@ -98,7 +101,6 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
             <Table.Td ta="center">{getTeamName(game)}</Table.Td>
             <Table.Td ta="center">
                 <BuyTicketBtn
-                    limit={game.ticket_count}
                     variant="base"
                     gameId={game.id}
                     disabled={game.status !== GameStatus[0]}

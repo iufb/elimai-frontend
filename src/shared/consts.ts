@@ -4,7 +4,7 @@ export type Game = {
     id: number;
     name_kz: string;
     name_ru: string;
-    event_date: Date | string
+    event_date: string
     created_at: string
     status: string
     ticket_count: number;

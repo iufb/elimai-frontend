@@ -12,7 +12,7 @@ import { IMaskInput } from "react-imask"
 import { useMutation, useQuery } from "react-query"
 export const SubscriptionWindow = () => {
     const t = useTranslations()
-    return <Stack maw={600}>
+    return <Stack p={{ sm: 10, lg: 0 }} maw={600}>
         <Alert
             icon={<AlertTriangle />}
             p={10}
