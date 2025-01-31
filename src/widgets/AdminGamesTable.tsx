@@ -1,6 +1,6 @@
 'use client'
 import { DeleteGameBtn, EditGameBtn } from "@/features";
-import { rCreateAdminSub, rCreateAdminTicket, rGetGames } from "@/shared/api/games";
+import { rCreateAdminSub, rCreateAdminTicket, rGetGameExcel, rGetGames } from "@/shared/api/games";
 import { Game, notificationErrors } from "@/shared/consts";
 import { useCreatePdf } from "@/shared/hooks";
 import { showErrorNotification } from "@/shared/notifications";
@@ -47,6 +47,10 @@ export const AdminGamesTable = () => {
             <Table.Td ta={'center'}>
                 <DeleteGameBtn id={element.id} />
             </Table.Td>
+            <Table.Td ta={'center'}>
+                <GetExcelTicketBtn game={element} />
+            </Table.Td>
+
         </Table.Tr>
     ));
 
@@ -67,6 +71,7 @@ export const AdminGamesTable = () => {
                             <Table.Th ta={'center'}>Создать билет</Table.Th>
                             <Table.Th ta={'center'}>Изменить</Table.Th>
                             <Table.Th ta={'center'}>Удалить</Table.Th>
+                            <Table.Th ta={'center'}>Отчет</Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>{rows}</Table.Tbody>
@@ -89,6 +94,30 @@ const CreateAdminTicketBtn = ({ game }: { game: Game }) => {
 
     return <Button loading={isLoading} onClick={() => create({ data: { order: '000001', event: game.id, email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(game.event_date).format("YYYY-MM-DD"), status: game.status, psign: 'none', code: Date.now() } })}>
         Создать билет
+    </Button>
+
+
+}
+const GetExcelTicketBtn = ({ game }: { game: Game }) => {
+    const { mutate: getExcel, isLoading, isError } = useMutation({
+        mutationKey: [`excel ${game.id}`], mutationFn: rGetGameExcel, onSuccess: (data) => {
+            console.log(data)
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${game.name_ru}-${dayjs(game.event_date).format('YYYY-MM-DD HH:mm')}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }, onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.get)
+        }
+    })
+
+    return <Button bg={'slate.7'} loading={isLoading} onClick={() => getExcel(game.id)}>
+        Отчет
     </Button>
 
 

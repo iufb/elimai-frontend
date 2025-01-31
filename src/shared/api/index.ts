@@ -7,9 +7,10 @@ interface CRequest {
     token?: string;
     query?: URLSearchParams | Record<string, any>;
     body?: { json?: unknown; multipart?: Record<string, string | Blob> };
+    returnType?: "json" | "blob"
 }
 
-export async function customFetch<T>(params: CRequest): Promise<T> {
+export async function customFetch<T>({ returnType = "json", ...params }: CRequest): Promise<T> {
     const url = new URL(`/api/${params.path}`, backendUrl);
 
     if (params.query) {
@@ -54,10 +55,10 @@ export async function customFetch<T>(params: CRequest): Promise<T> {
     const handleResponse = async (response: Response) => {
         const isJson =
             response.headers.get("content-type")?.includes("application/json") &&
-            params.method !== "DELETE";
+            params.method !== "DELETE" && returnType == 'json'
 
         if (response.ok) {
-            return isJson ? response.json() : response.text();
+            return isJson ? response.json() : returnType == 'blob' ? response.blob() : response.text();
         }
 
         throw {

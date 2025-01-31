@@ -22,6 +22,7 @@ async function adminMiddleware(req: NextRequest) {
 }
 const publicRoutes = ['register', 'login']
 const privateRoutes = ['profile', 'subscription']
+
 function authMiddleware(req: NextRequest) {
     const token = req.cookies.get("access");
     const { pathname } = req.nextUrl;

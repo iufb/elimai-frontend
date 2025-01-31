@@ -6,15 +6,21 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 interface AuthStatus {
     isLogged: boolean;
     isAdmin: boolean;
+    loading?: boolean;
     logged?: () => void
+    logout?: () => void
 }
 
 const AuthContext = createContext<AuthStatus | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [authStatus, setAuthStatus] = useState<AuthStatus>({ isLogged: false, isAdmin: false });
+    const [loading, setLoading] = useState(true)
     const logged = () => {
         setAuthStatus({ ...authStatus, isLogged: true })
+    }
+    const logout = () => {
+        setAuthStatus({ isAdmin: false, isLogged: false })
     }
     useEffect(() => {
         const fetchAuthStatus = async () => {
@@ -32,6 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 } else {
                     setAuthStatus({ isLogged: false, isAdmin: false });
                 }
+            } finally {
+                setLoading(false)
             }
         };
 
@@ -39,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
 
-    return <AuthContext.Provider value={{ ...authStatus, logged }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ ...authStatus, logged, logout, loading }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

@@ -91,7 +91,7 @@ export const RestoreForm = () => {
                     })}
                     placeholder={t('auth.confirmPassword')}
                 />
-                <Button variant="base" type="submit" >{t('auth.restore.btn')}</Button>
+                <Button loading={isLoading} disabled={isLoading} variant="base" type="submit" >{t('auth.restore.btn')}</Button>
 
             </Stack>
         </form> : <ConfirmForm mode="restore" userData={{ email: getValues().email, password: getValues().newPassword }} />
