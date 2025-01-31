@@ -4,14 +4,14 @@ type LoginResponse = {
     access: string, refresh: string, email: string, isAdmin: boolean
 }
 export const rLogin = async (body: { email: string; password: string }): Promise<LoginResponse> => {
-    try {
-        const loginData = await customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
-        const isAdmin = !!(await rIsAdmin(loginData.access))
-        return { ...loginData, isAdmin }
-
-    } catch (e) {
-        throw e
-    }
+    return customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
+    // try {
+    //     const loginData = await customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
+    //     const isAdmin = !!(await rIsAdmin(loginData.access))
+    //     return { ...loginData, isAdmin }
+    // } catch (e) {
+    //     throw e
+    // }
 };
 
 export const rIsAdmin = async (token: string) => {

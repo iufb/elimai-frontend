@@ -17,7 +17,7 @@ type LoginDto = {
 export const LoginForm = () => {
     const t = useTranslations()
     const router = useRouter()
-    const { logged } = useAuth()
+    const { logged, refetch } = useAuth()
     const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
         mutationFn: rLogin,
@@ -27,11 +27,8 @@ export const LoginForm = () => {
             setCookie('refresh', data.refresh)
             setCookie('email', data.email)
             if (logged) logged()
-            if (data.isAdmin) {
-                router.replace('/admin')
-            } else {
-                router.replace('/')
-            }
+            router.replace('/')
+            if (refetch) refetch()
 
         },
         onError: (e) => {

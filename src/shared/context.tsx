@@ -9,6 +9,7 @@ interface AuthStatus {
     loading?: boolean;
     logged?: () => void
     logout?: () => void
+    refetch?: () => void
 }
 
 const AuthContext = createContext<AuthStatus | undefined>(undefined);
@@ -22,32 +23,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = () => {
         setAuthStatus({ isAdmin: false, isLogged: false })
     }
-    useEffect(() => {
-        const fetchAuthStatus = async () => {
-            try {
-                const token = getCookie('access');
-                if (!token) {
-                    setAuthStatus({ isLogged: false, isAdmin: false });
-                    return;
-                }
-                await customFetch({ method: 'GET', path: 'is-admin/' });
-                setAuthStatus({ isLogged: true, isAdmin: true });
-            } catch (e: any) {
-                if (e.status === 403) {
-                    setAuthStatus({ isLogged: true, isAdmin: false });
-                } else {
-                    setAuthStatus({ isLogged: false, isAdmin: false });
-                }
-            } finally {
-                setLoading(false)
+    const fetchAuthStatus = async () => {
+        try {
+            const token = getCookie('access');
+            if (!token) {
+                setAuthStatus({ isLogged: false, isAdmin: false });
+                return;
             }
-        };
-
+            await customFetch({ method: 'GET', path: 'is-admin/' });
+            setAuthStatus({ isLogged: true, isAdmin: true });
+        } catch (e: any) {
+            if (e.status === 403) {
+                setAuthStatus({ isLogged: true, isAdmin: false });
+            } else {
+                setAuthStatus({ isLogged: false, isAdmin: false });
+            }
+        } finally {
+            setLoading(false)
+        }
+    };
+    useEffect(() => {
         fetchAuthStatus();
     }, []);
 
 
-    return <AuthContext.Provider value={{ ...authStatus, logged, logout, loading }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ ...authStatus, logged, logout, loading, refetch: fetchAuthStatus }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
