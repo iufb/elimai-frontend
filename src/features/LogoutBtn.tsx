@@ -1,8 +1,9 @@
 import { useRouter } from "@/i18n/routing"
 import { useAuth } from "@/shared/context"
-import { ActionIcon } from "@mantine/core"
+import { Button } from "@mantine/core"
 import { deleteCookie } from "cookies-next/client"
 import { LogOutIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export const LogoutBtn = () => {
     const router = useRouter()
@@ -14,5 +15,6 @@ export const LogoutBtn = () => {
         if (logout) logout()
         router.replace('/')
     }
-    return <ActionIcon bg={'elimai.6'} aria-label="Logout" onClick={handleLogout}><LogOutIcon /></ActionIcon>
+    const t = useTranslations()
+    return <Button variant={'base'} rightSection={<LogOutIcon size={14} />} onClick={handleLogout}>{t('auth.logout')}</Button>
 }

@@ -1,6 +1,7 @@
 'use client'
 import { AuthProtectedButton } from '@/features';
-import { Link, usePathname, useRouter } from '@/i18n/routing';
+import { Link as IntlLink, usePathname, useRouter } from '@/i18n/routing';
+import { useAuth } from '@/shared/context';
 import { AuthStatusView } from '@/widgets/AuthStatusView';
 import { LocaleSwitcher } from '@/widgets/LocaleSwitcher';
 import { AppShell, Box, Burger, Center, Flex, Group, Stack, Text } from '@mantine/core';
@@ -8,12 +9,14 @@ import { useDisclosure } from '@mantine/hooks';
 import { clsx } from 'clsx';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ReactNode, useEffect } from 'react';
 import classes from './BaseLayout.module.css';
 
 export function BaseLayout({ children }: { children: ReactNode }) {
     const [opened, { toggle, close }] = useDisclosure();
     const t = useTranslations()
+    const { isAdmin } = useAuth()
     const router = useRouter()
     const path = usePathname()
     useEffect(() => {
@@ -31,11 +34,13 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Image src='/logonew.png' width={50} height={50} alt='e-logo' />
                         <Group ml="xl" gap={0} visibleFrom="lg" align='flex-end'>
-                            <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
-                            <Link href={'/'} className={clsx(classes.control, path == '/' && classes.active)}>{t('header.main')}</Link>
+                            <IntlLink href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</IntlLink>
+                            <IntlLink href={'/'} className={clsx(classes.control, path == '/' && classes.active)}>{t('header.main')}</IntlLink>
                             <AuthProtectedButton className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
                                 router.push('/profile')
                             }} />
+                            {isAdmin &&
+                                <Link href={'/admin'} className={clsx(classes.control)}>Админ-панель</Link>}
                         </Group>
                         <Group>
                             <LocaleSwitcher />
@@ -47,11 +52,14 @@ export function BaseLayout({ children }: { children: ReactNode }) {
 
             <AppShell.Navbar py="md" px={4}>
                 <Box flex={1}>
-                    <Link href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</Link>
-                    <Link href={'/'} className={classes.control}>{t('header.main')}</Link>
+                    <IntlLink href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</IntlLink>
+                    <IntlLink href={'/'} className={classes.control}>{t('header.main')}</IntlLink>
                     <AuthProtectedButton className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
                         router.push('/profile')
                     }} />
+                    {isAdmin &&
+                        <Link href={'/admin'} className={clsx(classes.control)}>Админ-панель</Link>}
+
                 </Box>
                 <AuthStatusView />
             </AppShell.Navbar>
