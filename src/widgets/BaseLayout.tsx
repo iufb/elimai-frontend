@@ -25,8 +25,8 @@ export function BaseLayout({ children }: { children: ReactNode }) {
             header={{ height: 60 }}
             navbar={{ width: 300, breakpoint: 'lg', collapsed: { desktop: true, mobile: !opened } }}
         >
-            <AppShell.Header>
-                <Group h="100%" px="md">
+            <AppShell.Header >
+                <Group w={'100vw'} h="100%" pl={10} pr={20} >
                     <Burger opened={opened} onClick={toggle} hiddenFrom="lg" size="sm" />
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Image src='/logonew.png' width={50} height={50} alt='e-logo' />

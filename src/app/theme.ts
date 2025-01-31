@@ -10,6 +10,7 @@ export const theme = createTheme({
         lg: '56.25em',
         xl: '75em',
     },
+    primaryColor: 'elimai',
     components: {
         Button: Button.extend({
             classNames: {
