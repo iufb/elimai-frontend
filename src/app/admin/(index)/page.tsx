@@ -3,7 +3,7 @@ import { AdminGamesTable } from "@/widgets";
 import { Stack } from "@mantine/core";
 
 export default function Page() {
-    return <Stack >
+    return <Stack>
         <AddGameBtn />
         <AdminGamesTable />
     </Stack>

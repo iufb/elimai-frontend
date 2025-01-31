@@ -1,11 +1,13 @@
 "use client";
 
-import { Link, useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { rLogin } from "@/shared/api/auth";
+import { useAuth } from "@/shared/context";
 import { showErrorNotification } from "@/shared/notifications";
 import { Button, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
 import { deleteCookie, setCookie } from "cookies-next/client";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 type LoginDto = {
@@ -15,14 +17,22 @@ type LoginDto = {
 export const LoginForm = () => {
     const t = useTranslations()
     const router = useRouter()
+    const { logged } = useAuth()
     const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
         mutationFn: rLogin,
         onSuccess: (data) => {
+            console.log(data)
             setCookie('access', data.access)
             setCookie('refresh', data.refresh)
             setCookie('email', data.email)
-            router.replace('/')
+            if (logged) logged()
+            if (data.isAdmin) {
+                router.replace('/admin')
+            } else {
+                router.replace('/')
+            }
+
         },
         onError: (e) => {
             console.log(e)
@@ -42,7 +52,7 @@ export const LoginForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<LoginDto>({ mode: 'onChange', defaultValues: { email: "bashirov3ld2@gmail.com", password: "19931991iuN" } });
+    } = useForm<LoginDto>({ mode: 'onChange', defaultValues: { email: "test1@gmail.com", password: "test" } });
 
     const password = watch('password', '')
     return <form
@@ -68,7 +78,7 @@ export const LoginForm = () => {
             />
             <Text size="sm" c={'slate.6'} >{t.rich('auth.login.restore', { a: (chunk) => <Link className="link" href={'/restore'}>{chunk}</Link> })}</Text>
             <Text size="sm" c={'slate.6'} >{t.rich('auth.login.register', { a: (chunk) => <Link className="link" href={'/register'}>{chunk}</Link> })}</Text>
-            <Button variant="base" type="submit" >{t('auth.login.btn')}</Button>
+            <Button loading={isLoading} disabled={isLoading} variant="base" type="submit" >{t('auth.login.btn')}</Button>
 
         </Stack>
     </form>

@@ -23,8 +23,6 @@ export const RegisterForm = () => {
         mutationFn: rSendCode,
         onSuccess: (data) => {
             setShowConfirm(true)
-            // setCookie('token', data.token, { maxAge: 60 * 60 })
-            // router.replace('/admin')
         },
         onError: (e: { status: number }) => {
             if (e.status >= 400 && e.status < 500) {

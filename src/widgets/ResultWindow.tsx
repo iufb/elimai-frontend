@@ -7,9 +7,11 @@ import { useTranslations } from "next-intl"
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
-import { DownloadTicketsBtn } from "@/features"
+import { DownloadBtn } from "@/features"
 import { BuyTicketBtn } from "@/features/BuyTicketBtn"
-import { rGetTickets } from "@/shared/api/games"
+import { rGetSub, rGetTickets } from "@/shared/api/games"
+import { Ticket } from "@/shared/types"
+import { TicketsView } from "@/widgets/TicketsView"
 import { useQuery } from "react-query"
 
 export const ResultWindow = () => {
@@ -17,38 +19,21 @@ export const ResultWindow = () => {
     const query = useSearchParams()
     const order = query.get('order')
     const gameId = query.get('event_id')
+    const type = query.get('type')
     const { locale } = useParams()
     const { data: tickets, isFetching, error, refetch } = useQuery({
         queryKey: ['getTicket'], queryFn: async () => {
-            const data = await rGetTickets(order)
-            return data
+            return type == 'Aboniment' ? rGetSub(order) : rGetTickets(order)
         },
         enabled: !!order,
         refetchOnWindowFocus: false
     })
-    return <Box h={'50svh'}>
-        <Center h={'100%'} pos={'relative'}>
+    return <Box mt={20} mih={'50svh'}>
+        <Center w={'100%'} h={'100%'} pos={'relative'}>
             {isFetching ? <Loader color="elimai.6" /> :
                 !error ?
-                    <Stack>
-                        <Alert
-                            icon={<BadgeCheck />}
-                            p={10}
-                            variant="filled" color="elimai.2" title={t('result.success.message')}
-                        >
-                            <span>{t('result.success.count', { count: tickets?.length })}</span>
-                            <ul>
-                                <li>{t('result.success.instructions')}</li>
-                                <li>{t('result.success.additional_info.email')}</li>
-                                <li>{t('result.success.additional_info.account')}</li>
-                            </ul>
-                        </Alert>
-                        <Group grow>
-                            {tickets && <DownloadTicketsBtn tickets={tickets} />}
-                            {gameId && <BuyTicketBtn again variant="outline" gameId={parseInt(gameId)} />}
-                        </Group>
-                    </Stack>
-                    :
+                    type == 'Aboniment' ? <SuccessSubView tickets={tickets} /> :
+                        <SuccessTicketsView tickets={tickets} gameId={gameId} /> :
                     <Stack align="center">
                         <Ban size={100} color="red" />
                         <Title order={2} c={'red.5'}>{t('result.error')}</Title>
@@ -61,7 +46,58 @@ export const ResultWindow = () => {
     </Box>
 
 }
+interface SuccessTicketsViewProps {
+    tickets?: Ticket[]
+    gameId: string | null
 
+}
+const SuccessTicketsView = ({ tickets, gameId }: SuccessTicketsViewProps) => {
+    const t = useTranslations()
+    return <Stack>
+        <Alert
+            icon={<BadgeCheck />}
+            p={10}
+            variant="filled" color="elimai.2" title={t('result.success.tickets.message')}
+        >
+            <span>{t('result.success.tickets.count', { count: tickets?.length })}</span>
+            <ul>
+                <li>{t('result.success.tickets.instructions')}</li>
+                <li>{t('result.success.tickets.additional_info.email')}</li>
+                <li>{t('result.success.tickets.additional_info.account')}</li>
+            </ul>
+        </Alert>
+        <Group grow>
+            {tickets && <DownloadBtn type="ticket" tickets={tickets} />}
+            {gameId && <BuyTicketBtn again variant="outline" gameId={parseInt(gameId)} />}
+        </Group>
+        {tickets && <TicketsView type="ticket" tickets={tickets} />}
+    </Stack>
+
+}
+
+interface SuccessSubViewProps {
+    tickets?: Ticket[]
+
+}
+const SuccessSubView = ({ tickets }: SuccessSubViewProps) => {
+    const t = useTranslations()
+    return <Stack>
+        <Alert
+            icon={<BadgeCheck />}
+            p={10}
+            variant="filled" color="elimai.2" title={t('result.success.sub.message')}
+        >
+            <ul>
+                <li>{t('result.success.sub.additional_info')}</li>
+            </ul>
+        </Alert>
+        <Group grow>
+            {tickets && <DownloadBtn type="sub" tickets={tickets} />}
+        </Group>
+        {tickets && <TicketsView type="sub" tickets={tickets} />}
+    </Stack>
+
+}
 const NotDownloadedView = ({ refetch }: { refetch: () => void }) => {
     const [timer, setTimer] = useState(10)
     const t = useTranslations()

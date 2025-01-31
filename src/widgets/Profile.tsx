@@ -1,7 +1,9 @@
 'use client'
-import { DownloadTicketsBtn } from "@/features"
-import { rGetTicketsByUser } from "@/shared/api/games"
-import { Alert, Box, Center, LoadingOverlay, Stack, Table, Title } from "@mantine/core"
+import { AuthProtectedButton, DownloadBtn } from "@/features"
+import { Link, useRouter } from "@/i18n/routing"
+import { rGetSubByUser, rGetTicketsByUser } from "@/shared/api/games"
+import { Ticket } from "@/shared/types"
+import { Alert, Box, Button, ButtonProps, Center, LoadingOverlay, Stack, Table, Tabs } from "@mantine/core"
 import { AlertTriangle, CircleX } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
@@ -9,11 +11,79 @@ import { useMemo } from "react"
 import { useQuery } from "react-query"
 
 export const Profile = () => {
-    const t = useTranslations('gamesTable')
-    const { data: tickets, isLoading, isError } = useQuery({
+    const t = useTranslations()
+    return <Tabs mt={10} mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
+        <Tabs.List grow justify="center" >
+            <Tabs.Tab value="first">{t('profile.first')}</Tabs.Tab>
+            <Tabs.Tab value="second">{t('profile.second')}</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel w={'100%'} pt={10} px={{ sm: 5, lg: 0 }} value="first">
+            <TicketsTable />
+        </Tabs.Panel>
+        <Tabs.Panel w={'100%'} pt={10} px={{ sm: 5, lg: 0 }} value="second">
+            <SubSection />
+        </Tabs.Panel>
+    </Tabs>
+}
+const SubSection = () => {
+    const t = useTranslations()
+    const router = useRouter()
+    const { data: sub, isLoading, error } = useQuery<Ticket, { message: string, status: number }, Ticket, string[]>({
+        queryKey: ['sub user'], queryFn: async () => {
+            return rGetSubByUser()
+        }
+    })
+    if (isLoading) {
+        return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
+    }
+    if (error?.status === 404) {
+        return <Box h={250} maw={1200}><Alert
+            w={'100%'}
+            icon={<AlertTriangle />}
+            variant="filled" color="elimai.4" my={20} title={t('profile.errors.notFoundSub.title')}
+        >
+            {t('profile.errors.notFoundSub.desc')}
+        </Alert>
+            <AuthProtectedButton<ButtonProps>
+                label={t('buy.subBtn')}
+                variant="alert"
+                btnProps={{ w: '100%' }}
+                action={() => {
+                    router.push('/subscription')
+                }}
+            />
+        </Box>
+
+    }
+    if (error) {
+        return <Center w={'100%'} h={250} maw={1200} mx={'auto'}><Alert
+            icon={<CircleX />}
+            variant="filled" color="red.4" my={20} title={t('profile.errors.errorSub.title')}
+        >
+            {t('profile.errors.errorSub.desc')}
+        </Alert></Center>
+    }
+    return <Stack>
+        <Alert
+            icon={<AlertTriangle />}
+            p={10}
+            variant="filled" color="elimai.2" title={t('buy.subscriptionDetails.title')}
+        >
+            <ul>
+                <li>{t('buy.subscriptionDetails.description')}</li>
+                <li>{t('buy.subscriptionDetails.validity')}</li>
+                <li>{t('buy.subscriptionDetails.transferability')}</li>
+            </ul>
+        </Alert>
+
+        <DownloadBtn tickets={sub ? [sub] : []} type="sub" />
+    </Stack>
+}
+const TicketsTable = () => {
+    const t = useTranslations()
+    const { data: tickets, isLoading, error } = useQuery<Ticket[], { message: string, status: number }, Ticket[], string[]>({
         queryKey: ['tickets user'], queryFn: async () => {
-            const data = await rGetTicketsByUser()
-            return data
+            return rGetTicketsByUser()
         }
     })
     const { locale } = useParams()
@@ -25,10 +95,10 @@ export const Profile = () => {
         })
         return Object.keys(groupedTickets).map(key =>
             <Table.Tr key={key}>
-                <Table.Td ta="center">{locale == 'ru' ? "Елимай" : "Елімай"} <br /> {key}</Table.Td>
+                <Table.Td ta="center">{locale == 'ru' ? "Елимай" : "Елімай"} — {key}</Table.Td>
                 <Table.Td ta="center">{groupedTickets[key]?.length}</Table.Td>
                 <Table.Td ta="center">
-                    {groupedTickets[key] && <DownloadTicketsBtn tickets={groupedTickets[key]} />}
+                    {groupedTickets[key] && <DownloadBtn type="ticket" tickets={groupedTickets[key]} />}
                 </Table.Td>
             </Table.Tr>
         )
@@ -36,32 +106,39 @@ export const Profile = () => {
     if (isLoading) {
         return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1000} /></Box>
     }
-    if (!tickets) {
-        return <Center h={250} maw={1200} mx={'auto'}><Alert
-            icon={<CircleX />}
-            variant="filled" color="red.4" my={20} title={t('errorTickets.title')}
+    if (error?.status === 404) {
+        return <Box w={'100%'} h={250} maw={1200} mx={'auto'}><Alert
+            icon={<AlertTriangle />}
+            variant="filled" color="elimai.4" my={20} title={t('profile.errors.notFoundTickets.title')}
         >
-            {t('errorTickets.desc')}
-        </Alert></Center>
+            {t('profile.errors.notFoundTickets.desc')}
+        </Alert>
+            <Button variant="base" component={Link} href={'/'} w={'100%'}>
+                {t('profile.errors.notFoundTickets.btn')}
+            </Button>
+        </Box>
+
     }
-    if (tickets.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
-        icon={<AlertTriangle />}
-        variant="filled" color="elimai.4" my={20} title={t('notFoundTickets.title')}
-    >
-        {t('notFoundTickets.desc')}
-    </Alert></Center>
+    if (error) {
+        return <Center w={'100%'} h={250} maw={1200} mx={'auto'}><Alert
+            icon={<CircleX />}
+            variant="filled" color="red.4" my={20} title={t('profile.errors.errorTickets.title')}
+        >
+            {t('profile.errors.errorTickets.desc')}
+        </Alert></Center>
+
+    }
 
     return <Stack align="center" my={20} >
-        <Title order={4}>{t('buyedTickets')}</Title>
         <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
             <Table stripedColor="slate.2" withTableBorder fz={{
-                xs: 14, md: 16, lg: 18
+                xs: 14, md: 15, lg: 16
             }} >
                 <Table.Thead >
                     <Table.Tr>
-                        <Table.Th ta={'center'}>{t('game')}</Table.Th>
-                        <Table.Th ta={'center'}>{t('count')}</Table.Th>
-                        <Table.Th ta={'center'}>{t('tickets')}</Table.Th>
+                        <Table.Th ta={'center'}>{t('gamesTable.game')}</Table.Th>
+                        <Table.Th ta={'center'}>{t('gamesTable.count')}</Table.Th>
+                        <Table.Th ta={'center'}>{t('gamesTable.tickets')}</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -70,50 +147,5 @@ export const Profile = () => {
             </Table>
         </Table.ScrollContainer></Stack>
 
+
 }
-// interface SeeTicketButtonProps {
-//     tickets: Ticket[]
-// }
-// const SeeTicketButton = ({ tickets }: SeeTicketButtonProps) => {
-//     const [opened, { open, close }] = useDisclosure(false);
-//     const t = useTranslations()
-//     const rows = tickets.map((ticket, idx) =>
-//         <Table.Tr key={idx}>
-//             <Table.Td ta="center">{idx + 1}</Table.Td>
-//             <Table.Td ta="center">
-//                 <Button variant="base"><EyeIcon /></Button>
-//             </Table.Td>
-//             <Table.Td ta="center">
-//                 <Button variant="base"><DownloadIcon /></Button>
-//             </Table.Td>
-//
-//         </Table.Tr>
-//
-//     )
-//
-//     console.log(tickets)
-//     return (
-//         <>
-//             <Modal fullScreen size={'lg'} opened={opened} onClose={close} title={t('seeTickets.modal')}>
-//                 <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
-//                     <Table stripedColor="slate.2" withTableBorder fz={{
-//                         xs: 14, md: 16, lg: 18
-//                     }} >
-//                         <Table.Thead >
-//                             <Table.Tr>
-//                                 <Table.Th ta={'center'}>{t('seeTickets.name')}</Table.Th>
-//                                 <Table.Th ta={'center'}>{t('seeTickets.seeAction')}</Table.Th>
-//                                 <Table.Th ta={'center'}>{t('seeTickets.downloadAction')}</Table.Th>
-//                             </Table.Tr>
-//                         </Table.Thead>
-//                         <Table.Tbody>
-//                             {rows}
-//                         </Table.Tbody>
-//                     </Table>
-//                 </Table.ScrollContainer>
-//
-//             </Modal>
-//             <Button onClick={open} variant="base">{t('seeTickets.btn')}</Button>
-//         </>
-//     );
-// }

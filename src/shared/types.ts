@@ -4,10 +4,25 @@ export type Game = {
     id: number; // Assuming `id` is a unique identifier, often a number
     name_kz: string; // Assuming `name_kz` is a string (Kazakh name)
     name_ru: string; // Assuming `name_ru` is a string (Russian name)
-    event_date: Date | string// Can be a string (ISO format) or a Date object
+    event_date: string// Can be a string (ISO format) or a Date object
     created_at: string  // Can be a string (ISO format) or a Date object
     status: string  // Depending on the status type (string, boolean, or enum)
 };
+
+export interface AdminTicket {
+    id: number
+    event: number
+    order: number
+    code: string
+    created_at: string
+    will_deactivate_at: string
+    status: string
+    email: string
+    telephone: string
+    psign: string
+    user: number
+}
+
 export type Ticket = {
     name_ru: string
     name_kz: string

@@ -6,13 +6,16 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 interface AuthStatus {
     isLogged: boolean;
     isAdmin: boolean;
+    logged?: () => void
 }
 
 const AuthContext = createContext<AuthStatus | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [authStatus, setAuthStatus] = useState<AuthStatus>({ isLogged: false, isAdmin: false });
-
+    const logged = () => {
+        setAuthStatus({ ...authStatus, isLogged: true })
+    }
     useEffect(() => {
         const fetchAuthStatus = async () => {
             try {
@@ -36,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
 
-    return <AuthContext.Provider value={authStatus}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ ...authStatus, logged }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
