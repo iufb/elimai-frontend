@@ -48,19 +48,19 @@ export const ConfirmForm = ({ mode, userData }: ConfirmFormProps) => {
             case 'restore': restore({ email: userData.email, code: otp, new_password: userData.password })
         }
     }
-    return <Stack gap={20}>
+    return <Stack w={'100%'} maw={600} px={10} gap={20}>
         <Title order={2}>{t('auth.confirm.title')}</Title>
         <OTPInput
             value={otp}
             onChange={setOtp}
             numInputs={6}
-            inputStyle={'otp'}
-            containerStyle={'otp-container'}
-            // renderSeparator={<span className="separator">-</span>}
+            inputStyle={{ width: '100%', height: 45, }}
+            containerStyle={{ width: '100%', height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            renderSeparator={<span style={{ width: 20, height: 10 }} />}
             renderInput={(props) => <input  {...props} />}
         />
         <OtpTimer mode={mode} email={userData.email} />
-        <Button loading={registerIsLoading} onClick={verify} disabled={otp.length !== 6 || registerIsLoading} variant="base">{t('auth.confirm.btn')}</Button>
+        <Button loading={registerIsLoading || restoreIsLoading} onClick={verify} disabled={otp.length !== 6 || registerIsLoading || restoreIsLoading} variant="base">{t('auth.confirm.btn')}</Button>
     </Stack>
 }
 interface OtpTimerProps {
@@ -68,7 +68,7 @@ interface OtpTimerProps {
     mode: 'register' | 'restore'
 }
 const OtpTimer = ({ email, mode }: OtpTimerProps) => {
-    const [timer, setTimer] = useState(10)
+    const [timer, setTimer] = useState(60)
     const { mutate: resendCode, isLoading } = useMutation({
         mutationKey: ["resend-code"],
         mutationFn: rSendCode,
@@ -90,7 +90,7 @@ const OtpTimer = ({ email, mode }: OtpTimerProps) => {
         }
     }, [timer]);
     const t = useTranslations()
-    return <Button variant="outline" onClick={() => resendCode({ email, type: mode == 'register' ? "Registr" : "restore" })} disabled={timer > 0}  >
+    return <Button loading={isLoading} variant="outline" onClick={() => resendCode({ email, type: mode == 'register' ? "Registr" : "restore" })} disabled={timer > 0 || isLoading}  >
         {t('auth.confirm.timer')}  {timer > 0 && t('timer', { timer })}
     </Button>
 

@@ -15,8 +15,9 @@ export const rGetGame = (id: number) => {
     return customFetch({ method: "GET", path: `events/${id}/` });
 };
 
-
-
+export const rGetGameExcel = (id: number): Promise<Blob> => {
+    return customFetch({ method: "GET", path: `export-tickets/`, query: { EVENT_ID: id }, returnType: 'blob' });
+};
 export const rGetGames = (): Promise<Game[]> => {
     return customFetch({ method: "GET", path: "get-events" });
 };

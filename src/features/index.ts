@@ -4,4 +4,5 @@ export { BuySubscriptionBtn } from './BuySubscriptionBtn';
 export { DeleteGameBtn } from './DeleteGameBtn';
 export { DownloadBtn } from './DownloadBtn';
 export { EditGameBtn } from './EditGameBtn';
+export { LogoutBtn } from './LogoutBtn';
 
