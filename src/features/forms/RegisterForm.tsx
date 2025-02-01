@@ -43,7 +43,7 @@ export const RegisterForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<RegisterDto>({ mode: 'onChange', defaultValues: { email: "bashirov3ld2@gmail.com", password: "19931991iuN", confirmPassword: "19931991iuN" } });
+    } = useForm<RegisterDto>({ mode: 'onChange' });
 
     const password = watch('password', '')
     return (!showConfirm ?

@@ -49,7 +49,7 @@ export const LoginForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<LoginDto>({ mode: 'onChange', defaultValues: { email: "test1@gmail.com", password: "test" } });
+    } = useForm<LoginDto>({ mode: 'onChange' });
 
     const password = watch('password', '')
     return <form
@@ -63,6 +63,7 @@ export const LoginForm = () => {
                 error={errors["email"]?.message}
                 {...register("email", { required: t('errors.required') })}
                 placeholder={t('auth.email')}
+                disabled={false}
             />
             <PasswordInput
                 type="password"

@@ -17,7 +17,7 @@ export const BuyTicketBtn = ({ again = false, variant, gameId, disabled, ...prop
             <Modal centered size={'lg'} opened={opened} onClose={close} title={t('buy.ticketModal')}>
                 <BuyTicketForm gameId={gameId} />
             </Modal>
-            <AuthProtectedButton disabled={disabled} variant={variant} label={
+            <AuthProtectedButton btnProps={{ ['data-id']: "buyBtn" }} disabled={disabled} variant={variant} label={
                 again ? t('buy.again') : t('buy.btn')
             } action={open} />
         </>
