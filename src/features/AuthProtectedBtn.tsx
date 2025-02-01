@@ -26,7 +26,7 @@ export function AuthProtectedButton<T>({ label, btnProps, className, action, var
     }
     const t = useTranslations()
     return <>
-        <Modal size={'lg'} opened={opened} onClose={close} >
+        <Modal data-id='AuthProtectedModal' size={'lg'} opened={opened} onClose={close} >
             <Title order={3}></Title>
             <Text>{t.rich('auth.protected.desc', { login: chunk => <Link className="link" href={'/login'}>{chunk}</Link>, register: chunk => <Link className="link" href={'/register'}>{chunk}</Link>, })}</Text>
         </Modal>

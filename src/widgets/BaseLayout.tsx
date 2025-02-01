@@ -36,7 +36,9 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                         <Group ml="xl" gap={0} visibleFrom="lg" align='flex-end'>
                             <IntlLink href={'https://fcelimai.kz'} target='_blank' className={classes.control}>{t('header.fcelimai')}</IntlLink>
                             <IntlLink href={'/'} className={clsx(classes.control, path == '/' && classes.active)}>{t('header.main')}</IntlLink>
-                            <AuthProtectedButton className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
+                            <AuthProtectedButton btnProps={{
+                                ['data-id']: 'profile'
+                            }} className={clsx(classes.control, path == '/profile' && classes.active)} label={t('header.profile')} action={() => {
                                 router.push('/profile')
                             }} />
                             {isAdmin &&
