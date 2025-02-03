@@ -76,7 +76,12 @@ export async function customFetch<T>({ returnType = "json", ...params }: CReques
             response = await executeFetch();
             return handleResponse(response);
         } else {
-            throw new Error("Token refresh failed");
+            console.log("Refresh Failed")
+            throw {
+                message: response.statusText,
+                status: response.status,
+            };
+
         }
     }
 

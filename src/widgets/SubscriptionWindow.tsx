@@ -52,9 +52,17 @@ const Form = () => {
             console.log(data)
             router.push(url)
         },
-        onError: (e) => {
-            console.log(e)
-            showErrorNotification({ title: t('errors.post.title'), message: t('errors.post.description') })
+        onError: (e: { message: string, status: number }) => {
+            console.log(e.status, "STATUS")
+            switch (e.status) {
+                case 409:
+                    showErrorNotification({ title: t('errors.sub.409.title'), message: t('errors.sub.409.description') })
+                case 401:
+                    showErrorNotification({ title: t('errors.sub.401.title'), message: t('errors.sub.401.description') })
+                default:
+                    showErrorNotification({ title: t('errors.post.title'), message: t('errors.post.description') })
+            }
+
 
         }
     });

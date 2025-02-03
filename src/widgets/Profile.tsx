@@ -40,7 +40,7 @@ const SubSection = () => {
         return <Box h={250} maw={1200}><Alert
             w={'100%'}
             icon={<AlertTriangle />}
-            variant="filled" color="elimai.4" my={20} title={t('profile.errors.notFoundSub.title')}
+            variant="filled" color="elimai.2" my={20} title={t('profile.errors.notFoundSub.title')}
         >
             {t('profile.errors.notFoundSub.desc')}
         </Alert>
@@ -109,7 +109,7 @@ const TicketsTable = () => {
     if (error?.status === 404) {
         return <Box w={'100%'} h={250} maw={1200} mx={'auto'}><Alert
             icon={<AlertTriangle />}
-            variant="filled" color="elimai.4" my={20} title={t('profile.errors.notFoundTickets.title')}
+            variant="filled" color="elimai.2" my={20} title={t('profile.errors.notFoundTickets.title')}
         >
             {t('profile.errors.notFoundTickets.desc')}
         </Alert>
