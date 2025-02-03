@@ -16,5 +16,5 @@ export const LogoutBtn = () => {
         router.replace('/')
     }
     const t = useTranslations()
-    return <Button data-id='logout' variant={'base'} rightSection={<LogOutIcon size={14} />} onClick={handleLogout}>{t('auth.logout')}</Button>
+    return <Button w={'100%'} data-id='logout' variant={'base'} rightSection={<LogOutIcon size={14} />} onClick={handleLogout}>{t('auth.logout')}</Button>
 }
