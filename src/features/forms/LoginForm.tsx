@@ -17,6 +17,8 @@ type LoginDto = {
 export const LoginForm = () => {
     const t = useTranslations()
     const router = useRouter()
+
+    console.log(window.history)
     const { logged, refetch } = useAuth()
     const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
