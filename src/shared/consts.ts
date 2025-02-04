@@ -1,4 +1,4 @@
-export const GameStatus = ['Активный', 'Неактивный', 'Завершен']
+export const GameStatus = ['Активный', 'Ближайший', 'Неактивный', 'Завершен']
 export type GameDTO = Omit<Game, "id" | "created_at">
 export type Game = {
     id: number;

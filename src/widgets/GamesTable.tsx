@@ -4,6 +4,7 @@ import { BuyTicketBtn } from "@/features/BuyTicketBtn";
 import { useRouter } from "@/i18n/routing";
 import { rGetGames } from "@/shared/api/games";
 import { Game, GameStatus } from "@/shared/consts";
+import { SoldInfoView } from "@/widgets/SoldInfoView";
 import { Alert, Box, ButtonProps, Center, Group, LoadingOverlay, Stack, Table, Tabs, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { AlertTriangle, CircleX } from "lucide-react";
@@ -67,6 +68,7 @@ export const GamesTable = () => {
                     <Tabs.Tab value="second">{t('gamesTable.tabs.prev')}</Tabs.Tab>
                 </Tabs.List>
                 <Tabs.Panel value="first">
+                    <SoldInfoView game={games.filter(game => game.status == GameStatus[0] || game.status == GameStatus[1])[0]} />
                     <CustomTable>{nextRows}</CustomTable>
                 </Tabs.Panel>
                 <Tabs.Panel value="second">
@@ -80,7 +82,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
     const filteredGames = useMemo(
         () =>
             games?.filter(game =>
-                isFuture ? new Date(game.event_date) > new Date() : new Date(game.event_date) < new Date()
+                isFuture ? (game.status == GameStatus[1] || game.status == GameStatus[0]) : (game.status == GameStatus[2] || game.status == GameStatus[3])
             ).sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()),
         [games, isFuture]
     );
@@ -95,8 +97,15 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
             {elimai} <Text visibleFrom="md" component="span">—</Text>  {enemy}
         </Box>
     }
+    const rowStyle = (status: string) => {
+        switch (status) {
+            case GameStatus[2]: return "gray.3"
+            case GameStatus[3]: return "gray.3"
+            default: return ""
+        }
+    }
     return filteredGames?.map(game => (
-        <Table.Tr bg={game.status !== GameStatus[0] ? 'gray.3' : ""} key={game.id}>
+        <Table.Tr bg={rowStyle(game.status)} key={game.id}>
             <Table.Td ta="center">{formatEventDate(game.event_date)}</Table.Td>
             <Table.Td ta="center">{getTeamName(game)}</Table.Td>
             <Table.Td ta="center">
@@ -114,7 +123,8 @@ const CustomTable = ({ children }: { children: ReactNode }) => {
     return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
         <Table stripedColor="slate.2" withTableBorder fz={{
             xs: 14, md: 16, lg: 18
-        }} >
+        }}
+        >
             <Table.Thead >
                 <Table.Tr>
                     <Table.Th ta={'center'}>{t('date')}</Table.Th>
