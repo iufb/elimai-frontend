@@ -57,8 +57,10 @@ const Form = () => {
             switch (e.status) {
                 case 409:
                     showErrorNotification({ title: t('errors.sub.409.title'), message: t('errors.sub.409.description') })
+                    break;
                 case 401:
                     showErrorNotification({ title: t('errors.sub.401.title'), message: t('errors.sub.401.description') })
+                    break;
                 default:
                     showErrorNotification({ title: t('errors.post.title'), message: t('errors.post.description') })
             }

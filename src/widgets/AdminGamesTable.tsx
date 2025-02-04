@@ -1,11 +1,11 @@
 'use client'
 import { DeleteGameBtn, EditGameBtn } from "@/features";
-import { rCreateAdminSub, rCreateAdminTicket, rGetGameExcel, rGetGames } from "@/shared/api/games";
+import { rCreateAdminSub, rCreateAdminTicket, rGetGameExcel, rGetGames, rGetSubExcel } from "@/shared/api/games";
 import { Game, notificationErrors } from "@/shared/consts";
 import { useCreatePdf } from "@/shared/hooks";
 import { showErrorNotification } from "@/shared/notifications";
 import { GameStatus } from "@/shared/types";
-import { Box, Button, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
+import { Box, Button, Group, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import { deleteCookie } from "cookies-next";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -56,8 +56,11 @@ export const AdminGamesTable = () => {
 
     return (
         <Stack align="center" my={20} >
+            <Group w={'100%'} align="start">
+                <CreateAdminSubBtn />
+                <GetExcelSubBtn />
+            </Group>
             <Title order={2}>Матчи</Title>
-            <CreateAdminSubBtn />
             <Table.ScrollContainer minWidth={500} w={'100%'}>
                 <Table miw={390} fz={{
                     xs: 14, md: 16, lg: 18
@@ -118,6 +121,30 @@ const GetExcelTicketBtn = ({ game }: { game: Game }) => {
 
     return <Button bg={'slate.7'} loading={isLoading} onClick={() => getExcel(game.id)}>
         Отчет
+    </Button>
+
+
+}
+const GetExcelSubBtn = () => {
+    const { mutate: getExcel, isLoading, isError } = useMutation({
+        mutationKey: [`excel sub`], mutationFn: rGetSubExcel, onSuccess: (data) => {
+            console.log(data)
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Абонементы-${dayjs(new Date()).format('YYYY-MM-DD')}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }, onError: (e) => {
+            console.log(e)
+            showErrorNotification(notificationErrors.get)
+        }
+    })
+
+    return <Button bg={'slate.7'} loading={isLoading} onClick={() => getExcel()}>
+        Отчет Абонементы
     </Button>
 
 

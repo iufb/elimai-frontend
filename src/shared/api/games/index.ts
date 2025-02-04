@@ -18,6 +18,10 @@ export const rGetGame = (id: number) => {
 export const rGetGameExcel = (id: number): Promise<Blob> => {
     return customFetch({ method: "GET", path: `export-tickets/`, query: { EVENT_ID: id }, returnType: 'blob' });
 };
+export const rGetSubExcel = (): Promise<Blob> => {
+    return customFetch({ method: "GET", path: `export-aboniments/`, returnType: 'blob' });
+};
+
 export const rGetGames = (): Promise<Game[]> => {
     return customFetch({ method: "GET", path: "get-events" });
 };

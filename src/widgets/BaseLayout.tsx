@@ -74,7 +74,7 @@ export function BaseLayout({ children }: { children: ReactNode }) {
                     <Stack
                         p={{ xs: 5, sm: 10, xl: 0 }}
                         maw={1200} mx={'auto'}>
-                        <Text maw={1200} c={'gray.4'} component={Link} href={'/policy'}>{t('policy.title')}</Text>
+                        <Text maw={1200} c={'gray.4'} component={IntlLink} href={'/policy'}>{t('policy.title')}</Text>
                         <Text py={10} fz={14} ta={'center'} c={'gray.4'}>© {new Date().getFullYear()} {t('footer')}</Text>
                     </Stack>
                 </footer>
