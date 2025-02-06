@@ -45,7 +45,9 @@ export const ConfirmForm = ({ mode, userData }: ConfirmFormProps) => {
         console.log(mode, "MODE")
         switch (mode) {
             case 'register': register({ ...userData, code: otp })
+                break;
             case 'restore': restore({ email: userData.email, code: otp, new_password: userData.password })
+                break;
         }
     }
     return <Stack w={'100%'} maw={600} px={10} gap={20}>

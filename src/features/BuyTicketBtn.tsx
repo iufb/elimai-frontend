@@ -13,7 +13,7 @@ interface BuyTicketBtnProps extends ButtonProps {
 }
 export const BuyTicketBtn = ({ again = false, variant, gameId, disabled, ...props }: BuyTicketBtnProps) => {
     const [opened, { open, close }] = useDisclosure(false);
-    const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId) })
+    const { data: ticketsCount, isLoading } = useQuery({ queryKey: [`tickets count ${gameId}`], queryFn: () => rGetTicketsCount(gameId), enabled: !disabled })
     const t = useTranslations()
     return (
         <>
