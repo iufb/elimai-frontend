@@ -1534,6 +1534,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/emscripten@npm:^1.39.13":
+  version: 1.40.0
+  resolution: "@types/emscripten@npm:1.40.0"
+  checksum: 10c0/2c809da43cb42396a78bc1bf1f8bb1eb23874b22425ccc0efd2dff80522318739fc38e845d98983948ca271fe1a551f68043094d20df14e745aff8db2123a0e5
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*, @types/estree@npm:^1.0.0":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -1773,6 +1780,19 @@ __metadata:
   version: 1.2.0
   resolution: "@ungap/structured-clone@npm:1.2.0"
   checksum: 10c0/8209c937cb39119f44eb63cf90c0b73e7c754209a6411c707be08e50e29ee81356dca1a848a405c8bdeebfe2f5e4f831ad310ae1689eeef65e7445c090c6657d
+  languageName: node
+  linkType: hard
+
+"@yudiel/react-qr-scanner@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@yudiel/react-qr-scanner@npm:2.2.1"
+  dependencies:
+    barcode-detector: "npm:^3.0.0"
+    webrtc-adapter: "npm:9.0.1"
+  peerDependencies:
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  checksum: 10c0/aa60f45144a1710a3cac88d7fe921771a8085a80d4aad0a81ec22dfdfe5b9469d4c29f6fc89cbb86dad25173ede11a5f9c7c80b9dac47277de277804b17d9dad
   languageName: node
   linkType: hard
 
@@ -2179,6 +2199,15 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
+  languageName: node
+  linkType: hard
+
+"barcode-detector@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "barcode-detector@npm:3.0.0"
+  dependencies:
+    zxing-wasm: "npm:^2.0.1"
+  checksum: 10c0/7f2912e4657f443d67185a671cec88de3a0fad83317bbe9f8cf552d5258ec07d617a3db03dbda41c9a746ad8273c8d8409b6f52965fc43de394bda3c43aae063
   languageName: node
   linkType: hard
 
@@ -5379,6 +5408,7 @@ __metadata:
     "@types/qrcode": "npm:^1"
     "@types/react": "npm:18.3.3"
     "@types/react-dom": "npm:18.3.0"
+    "@yudiel/react-qr-scanner": "npm:^2.2.1"
     clsx: "npm:^2.1.1"
     cookies-next: "npm:^5.0.2"
     cypress: "npm:^14.0.1"
@@ -7092,6 +7122,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sdp@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "sdp@npm:3.2.0"
+  checksum: 10c0/fa0146132b4c9185f276b80e09f52259b103e609565ac40c560250dbe7fc47723d30530c0db9cac6217c83153944a71af81fa70dc0367f195aabcf110f8185fd
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
@@ -7837,6 +7874,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^4.33.0":
+  version: 4.33.0
+  resolution: "type-fest@npm:4.33.0"
+  checksum: 10c0/20015eea353605e08e3f4b967291b225fa4e7c43361de44f39b88131715e41877458af80da59c8f17e40c0e3842298996f0651219dc9823e35c7e46ecbc8a44f
+  languageName: node
+  linkType: hard
+
 "typed-array-buffer@npm:^1.0.0":
   version: 1.0.0
   resolution: "typed-array-buffer@npm:1.0.0"
@@ -8151,6 +8195,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webrtc-adapter@npm:9.0.1":
+  version: 9.0.1
+  resolution: "webrtc-adapter@npm:9.0.1"
+  dependencies:
+    sdp: "npm:^3.2.0"
+  checksum: 10c0/09286adf351b3aff6eadf7942de7f153072a946fd815450e23505e39181c332d0552f4d27a99c5d7258efa3bd70a12949fe043fd8dc6acc03507b4448d7a597e
+  languageName: node
+  linkType: hard
+
 "whatwg-url@npm:^5.0.0":
   version: 5.0.0
   resolution: "whatwg-url@npm:5.0.0"
@@ -8380,5 +8433,17 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"zxing-wasm@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "zxing-wasm@npm:2.0.1"
+  dependencies:
+    "@types/emscripten": "npm:^1.39.13"
+    type-fest: "npm:^4.33.0"
+  peerDependencies:
+    "@types/emscripten": ">=1.39.6"
+  checksum: 10c0/ab17f114fdde50796f1e1e15f32507f3950d7d03d0d77aae6ada62411021c39637ee2c214e2725f1044fc9d2f1e5a3a84e19d00906b87504e0ebfb053c221364
   languageName: node
   linkType: hard
