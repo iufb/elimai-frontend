@@ -94,7 +94,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
         const elimai = locale == 'ru' ? 'Елимай' : "Елімай"
         const enemy = locale == 'ru' ? game.name_ru : game.name_kz
         return <Box>
-            {elimai} <Text visibleFrom="md" component="span">—</Text>  {enemy}
+            {elimai} <Box visibleFrom="xs" hiddenFrom="md" component="br" />  <Text visibleFrom="md" component="span">—</Text>  {enemy}
         </Box>
     }
     const rowStyle = (status: string) => {
@@ -120,7 +120,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
 };
 const CustomTable = ({ children }: { children: ReactNode }) => {
     const t = useTranslations('gamesTable')
-    return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={350} w={'100%'}>
+    return <Table.ScrollContainer mt={20} mx={'auto'} maw={1200} minWidth={290} w={'100%'}>
         <Table stripedColor="slate.2" withTableBorder fz={{
             xs: 14, md: 16, lg: 18
         }}
