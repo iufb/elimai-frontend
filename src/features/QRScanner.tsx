@@ -1,9 +1,12 @@
 'use client'
-import { Box, Button, Loader, Modal } from "@mantine/core";
+import { rScanSub, rScanTicket } from "@/shared/api/games";
+import { Button, Loader, Modal, Notification, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import { CheckIcon, XIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { useMutation } from "react-query";
 
 export const QRScanner = () => {
 
@@ -17,42 +20,105 @@ export const QRScanner = () => {
 const Ticket = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const { id } = useParams()
-    const [loading, setLoading] = useState(false)
-    const [res, setRes] = useState<boolean>()
+    const [res, setRes] = useState<{ status: number, message: string } | null>(null)
+    const { mutate: scan, isLoading, isError } = useMutation({
+        mutationKey: ["scan ticket"],
+        mutationFn: rScanTicket,
+        onSuccess: (data) => {
+            setRes({ status: 200, message: "Ваш билет подтвержден. Добро пожаловать на мероприятие!" })
+        },
+        onError: (e: { status: number }) => {
+            console.log(e)
+            if (e.status == 403) {
+                setRes({ status: 403, message: "Билет не другой матч" })
+            } else {
+                setRes({ status: 404, message: "Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
+            }
+        }
+    })
     const onScan = (result: IDetectedBarcode[]) => {
+        setRes(null)
         if (!result[0] && !id) {
             return;
         }
         const code = result[0].rawValue
+        scan({ event_id: id as string, code })
         console.log(`Event : ${id} -- Code : ${code}`)
-        setLoading(true)
-        setTimeout(() => {
-            setRes(true)
-            setLoading(false)
-        }, 3000)
     }
     return (
         <>
-            <Modal fullScreen opened={opened} onClose={close} title={'QR Сканнер'}>
-                <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
-                {loading ? <Loader /> : res ? <Box>Success</Box> : <Box>Error</Box>}
-            </Modal>
-            <Button w={'100%'} variant="base" onClick={open}>
-                Скан билета
+            <Modal fullScreen opened={opened} onClose={() => {
+                setRes(null)
+                close()
+            }} title={'QR Сканнер билетов'}>
+                <Stack align="center" >
+                    <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
+                    <ResultView loading={isLoading} result={res} />
+                </Stack>
+            </Modal >
+            <Button w={'100%'} variant="base" onClick={open}> Скан билета
             </Button>
         </>
     );
 }
 const Sub = () => {
     const [opened, { open, close }] = useDisclosure(false);
+    const { id } = useParams()
+    const [res, setRes] = useState<{ status: number, message: string } | null>(null)
+    const { mutate: scan, isLoading, isError } = useMutation({
+        mutationKey: ["scan sub"],
+        mutationFn: rScanSub,
+        onSuccess: (data) => {
+            setRes({ status: 200, message: "Ваш билет подтвержден. Добро пожаловать на мероприятие!" })
+        },
+        onError: (e: { message: string, status: number }) => {
+            if (e.status == 409) {
+                setRes({ status: 409, message: "Этот абонемент уже был применен для входа на данный матч." })
+            } else {
+
+                setRes({ status: 404, message: "Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
+            }
+        }
+    })
+    const onScan = (result: IDetectedBarcode[]) => {
+        setRes(null)
+        if (!result[0] && !id) {
+            return;
+        }
+        const code = result[0].rawValue
+        scan({ event_id: id as string, code })
+        console.log(`Event : ${id} -- Code : ${code}`)
+    }
     return (
         <>
-            <Modal fullScreen opened={opened} onClose={close} title={'QR Сканнер'}>
-                <Scanner onScan={(result) => console.log(result)} />
-            </Modal>
+            <Modal fullScreen opened={opened} onClose={() => {
+                setRes(null)
+                close()
+            }} title={'QR Сканнер абонемента'}>
+                <Stack align="center" >
+                    <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
+                    <ResultView loading={isLoading} result={res} />
+                </Stack>
+            </Modal >
             <Button w={'100%'} variant="alert" onClick={open}>
                 Скан абонемента
             </Button>
         </>
     );
 }
+const ResultView = ({ loading, result }: { loading: boolean, result: { status: number, message: string } | null }) => {
+    if (loading) {
+        return <Loader />
+    }
+    if (result?.status == 200) {
+        return <Notification withCloseButton={false} color="green" icon={<CheckIcon size={20} />} title="Билет действителен!">
+            {result.message}
+        </Notification>
+    } else if (result !== null) {
+        return <Notification withCloseButton={false} icon={<XIcon size={20} />} color="red" title="Билет недействителен!">
+            {result.message}
+        </Notification>
+    } else {
+        return null
+    }
+} 

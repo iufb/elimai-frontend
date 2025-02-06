@@ -64,6 +64,14 @@ export const rGetUserTicketLimit = (gameId: number): Promise<{ message: string }
     return customFetch({ method: "GET", path: "event-limit/", query: { EVENT_ID: gameId } });
 };
 
+export const rScanTicket = (data: { code: string, event_id: string }): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "ticket-scan/", query: data });
+};
+export const rScanSub = (data: { code: string, event_id: string }): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "aboniment-scan/", query: data });
+};
+
+
 
 
 
