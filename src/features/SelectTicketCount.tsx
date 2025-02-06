@@ -7,9 +7,10 @@ type valueType = { value: string, disabled: boolean }
 interface SelectTicketCountProps {
     gameId: number;
     value: string;
+    remaining: number;
     onChange: (value: string | null) => void
 }
-export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCountProps) => {
+export const SelectTicketCount = ({ gameId, value, remaining, onChange }: SelectTicketCountProps) => {
     const t = useTranslations()
     const { data: buyed, isLoading } = useQuery({
         queryKey: [`user limit ${gameId}`], queryFn: async () => {
@@ -24,7 +25,7 @@ export const SelectTicketCount = ({ gameId, value, onChange }: SelectTicketCount
     }
     const options = new Array(3).fill('*').map((_, idx) => {
         const value = `${idx + 1}`
-        return { value: value, label: value, disabled: idx + 1 + parseInt(buyed) >= 4 }
+        return { value: value, label: value, disabled: idx + 1 + parseInt(buyed) >= 4 || idx + 1 > remaining }
     })
     return <Select
         styles={{

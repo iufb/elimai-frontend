@@ -1,8 +1,9 @@
 'use client'
-import { useRouter } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
 import { rBuyTicket, rGetSubscriptionCount } from "@/shared/api/games"
+import { useAuth } from "@/shared/context"
 import { showErrorNotification } from "@/shared/notifications"
-import { Alert, Box, Button, Input, Skeleton, Stack, Text } from "@mantine/core"
+import { Alert, Box, Button, Group, Input, Skeleton, Stack, Text } from "@mantine/core"
 import { getCookie } from "cookies-next"
 import { AlertTriangle } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -12,7 +13,25 @@ import { IMaskInput } from "react-imask"
 import { useMutation, useQuery } from "react-query"
 export const SubscriptionWindow = () => {
     const t = useTranslations()
-    return <Stack p={{ sm: 10, lg: 0 }} maw={600}>
+    const { isLogged, loading } = useAuth()
+    return <Stack p={10} maw={600}>
+        {loading ? <Skeleton w={'100%'} h={177} /> : !isLogged &&
+            <Stack><Alert
+                icon={<AlertTriangle />}
+                p={10}
+                variant="filled" color="red.4" title={t('alert.401.title')}
+            >
+                <ul>
+                    <li>{t('alert.401.message')}</li>
+                </ul>
+            </Alert>
+                <Group>
+                    <Button flex={1} variant="base" component={Link} href={'/login'}>{t('auth.login.btn')}</Button>
+                    <Button flex={1} variant="outline" component={Link} href={'/register'}>{t('auth.register.btn')}</Button>
+                </Group>
+            </Stack>
+
+        }
         <Alert
             icon={<AlertTriangle />}
             p={10}
@@ -30,7 +49,7 @@ export const SubscriptionWindow = () => {
             </ul>
         </Alert>
         <Form />
-    </Stack>
+    </Stack >
 }
 
 const Form = () => {
@@ -57,8 +76,10 @@ const Form = () => {
             switch (e.status) {
                 case 409:
                     showErrorNotification({ title: t('errors.sub.409.title'), message: t('errors.sub.409.description') })
+                    break;
                 case 401:
                     showErrorNotification({ title: t('errors.sub.401.title'), message: t('errors.sub.401.description') })
+                    break;
                 default:
                     showErrorNotification({ title: t('errors.post.title'), message: t('errors.post.description') })
             }

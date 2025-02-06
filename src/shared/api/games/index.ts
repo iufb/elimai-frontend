@@ -18,6 +18,10 @@ export const rGetGame = (id: number) => {
 export const rGetGameExcel = (id: number): Promise<Blob> => {
     return customFetch({ method: "GET", path: `export-tickets/`, query: { EVENT_ID: id }, returnType: 'blob' });
 };
+export const rGetSubExcel = (): Promise<Blob> => {
+    return customFetch({ method: "GET", path: `export-aboniments/`, returnType: 'blob' });
+};
+
 export const rGetGames = (): Promise<Game[]> => {
     return customFetch({ method: "GET", path: "get-events" });
 };
@@ -59,6 +63,14 @@ export const rGetSubscriptionCount = (): Promise<{ message: string }> => {
 export const rGetUserTicketLimit = (gameId: number): Promise<{ message: string }> => {
     return customFetch({ method: "GET", path: "event-limit/", query: { EVENT_ID: gameId } });
 };
+
+export const rScanTicket = (data: { code: string, event_id: string }): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "ticket-scan/", query: data });
+};
+export const rScanSub = (data: { code: string, event_id: string }): Promise<{ message: string }> => {
+    return customFetch({ method: "GET", path: "aboniment-scan/", query: data });
+};
+
 
 
 
