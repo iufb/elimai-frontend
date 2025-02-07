@@ -4,7 +4,6 @@ import { rCreateAdminSub, rCreateAdminTicket, rGetGameExcel, rGetGames, rGetSubE
 import { Game, notificationErrors } from "@/shared/consts";
 import { useCreatePdf } from "@/shared/hooks";
 import { showErrorNotification } from "@/shared/notifications";
-import { GameStatus } from "@/shared/types";
 import { Box, Button, Group, LoadingOverlay, Stack, Table, Title } from "@mantine/core";
 import { deleteCookie } from "cookies-next";
 import dayjs from "dayjs";
@@ -100,7 +99,7 @@ const CreateAdminTicketBtn = ({ game }: { game: Game }) => {
         }
     })
 
-    return <Button loading={isLoading} onClick={() => create({ data: { order: '000001', event: game.id, email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(game.event_date).format("YYYY-MM-DD"), status: game.status, psign: 'none', code: Date.now() } })}>
+    return <Button loading={isLoading} onClick={() => create({ data: { order: '000001', event: game.id, email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(game.event_date).format("YYYY-MM-DD"), status: 'Active', psign: 'none', code: Date.now() } })}>
         Создать билет
     </Button>
 
@@ -165,7 +164,7 @@ const CreateAdminSubBtn = () => {
         }
     })
 
-    return <Button variant="alert" loading={isLoading} onClick={() => create({ data: { order: '000001', event: '0', email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(new Date()).format("YYYY-MM-DD"), status: GameStatus[0], psign: 'none', code: Date.now() } })}>
+    return <Button variant="alert" loading={isLoading} onClick={() => create({ data: { order: '000001', event: '0', email: 'admin', telephone: 'admin', will_deactivate_at: dayjs(new Date()).format("YYYY-MM-DD"), status: 'Active', psign: 'none', code: Date.now() } })}>
         Создать Абонемент
     </Button>
 
