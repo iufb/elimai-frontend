@@ -1,4 +1,6 @@
 # Logs
+.idea/
+qodana.yaml
 logs
 *.log
 npm-debug.log*

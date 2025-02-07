@@ -17,7 +17,7 @@ export const useCreatePdf = () => {
 
         const pageHeight = doc.internal.pageSize.getHeight();
         const pageHalf = pageWidth / 2
-        const qrDim = 75
+        const qrDim = 100
         const qrImage = new Image();
 
         templateImage.onload = () => {
