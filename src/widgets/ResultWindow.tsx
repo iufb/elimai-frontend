@@ -53,7 +53,7 @@ interface SuccessTicketsViewProps {
 }
 const SuccessTicketsView = ({ tickets, gameId }: SuccessTicketsViewProps) => {
     const t = useTranslations()
-    return <Stack>
+    return <Stack p={{ sm: 10, md: 0 }}>
         <Alert
             icon={<BadgeCheck />}
             p={10}
@@ -81,7 +81,7 @@ interface SuccessSubViewProps {
 }
 const SuccessSubView = ({ tickets }: SuccessSubViewProps) => {
     const t = useTranslations()
-    return <Stack>
+    return <Stack p={{ sm: 10, md: 0 }}>
         <Alert
             icon={<BadgeCheck />}
             p={10}
