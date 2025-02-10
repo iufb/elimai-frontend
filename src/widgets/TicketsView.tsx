@@ -1,9 +1,10 @@
 'use client'
 import { Ticket } from "@/shared/types";
+import { Center, Loader } from "@mantine/core";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import QrCode from "qrcode";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface TicketsViewProps {
     tickets: Ticket[]
@@ -13,6 +14,7 @@ const RATIO = 1.416666667
 export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { locale } = useParams()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const showSub = () => {
@@ -24,7 +26,7 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
 
             const width = canvas.width;
             const height = width * RATIO;
-            const qrDim = width / 3;
+            const qrDim = width / 2.5;
             const image = new Image();
             const qrImage = new Image();
 
@@ -45,12 +47,14 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
 
                     qrImage.onload = () => {
                         image.onload = () => {
+                            setLoading(false)
                             ctx.drawImage(image, 0, idx * height, width, height);
 
                             ctx.drawImage(qrImage, width / 2 - qrDim / 2, height / 2 - qrDim / 2, qrDim, qrDim);
 
                         };
 
+                        setLoading(false)
                         image.src = '/2.PNG';
                     };
                 });
@@ -65,7 +69,7 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
 
             const width = canvas.width;
             const height = width * RATIO;
-            const qrDim = width / 3;
+            const qrDim = width / 2.5;
             const elimai = locale == 'ru' ? "Елимай" : "Елімай"
 
 
@@ -88,7 +92,7 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
                         image.onload = () => {
                             ctx.drawImage(image, 0, idx * height, width, height);
 
-                            ctx.drawImage(qrImage, width / 2 - qrDim / 2, idx * height + height / 3, qrDim, qrDim);
+                            ctx.drawImage(qrImage, width / 2 - qrDim / 2, idx * height + height / 2.8, qrDim, qrDim);
 
                             ctx.textAlign = 'center';
                             ctx.font = 'bold 16px Nunito';
@@ -99,30 +103,36 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
 
                             ctx.font = 'bold 16px Nunito';
                             ctx.fillStyle = '#fff';
-                            ctx.fillText(dateStr, width / 2, idx * height + height / 2 + 140);
+                            ctx.fillText(dateStr, width / 2, idx * height + height / 2 + 142);
 
                             ctx.font = 'bold 22px Nunito';
                             ctx.fillStyle = '#ECE720';
                             ctx.fillText(timeStr, width / 2, idx * height + height / 2 + 170);
                         };
 
+                        setLoading(false)
                         image.src = '/4.PNG';
                     };
                 });
             })
+
         }
         type == 'ticket' ? showTickets() : showSub()
     }, []);
+    console.log(loading, type)
 
-    return (
+    return <>
+        {loading && <Center mih={200}> <Loader /></Center>}
         <canvas
             ref={canvasRef}
             width={350}
             height={350 * tickets.length * RATIO}
             style={{
                 width: 350,
+                opacity: loading ? 0 : 1,
                 margin: '0 auto'
             }}
         />
-    );
+    </>
+
 }

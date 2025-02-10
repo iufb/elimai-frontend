@@ -82,7 +82,7 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
     const filteredGames = useMemo(
         () =>
             games?.filter(game =>
-                isFuture ? (game.status == GameStatus[1] || game.status == GameStatus[0]) : (game.status == GameStatus[2] || game.status == GameStatus[3])
+                isFuture ? (game.status == GameStatus[1] || game.status == GameStatus[0]) : (game.status == GameStatus[2])
             ).sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()),
         [games, isFuture]
     );
@@ -100,7 +100,6 @@ const GameRows = ({ games, locale, isFuture }: { games?: Game[]; locale: string;
     const rowStyle = (status: string) => {
         switch (status) {
             case GameStatus[2]: return "gray.3"
-            case GameStatus[3]: return "gray.3"
             default: return ""
         }
     }

@@ -60,7 +60,7 @@ export const useCreatePdf = () => {
 
             doc.setFont('Nunito-Bold', 'normal')
             doc.addImage(templateImage, 'JPG', 0, 0, pageWidth, pageHeight);
-            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 30) / 2, qrDim, qrDim);
+            doc.addImage(qrImage, 'PNG', (pageWidth - qrDim) / 2, (pageHeight - qrDim - 12) / 2, qrDim, qrDim);
             doc.setFontSize(20)
             doc.setTextColor('#697BD3')
             doc.text(enemy.toUpperCase(), pageHalf / 1.6, pageHeight / 2 + 65, { align: 'center' })

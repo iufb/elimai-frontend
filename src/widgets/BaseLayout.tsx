@@ -4,11 +4,10 @@ import { Link as IntlLink, usePathname, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/shared/context';
 import { AuthStatusView } from '@/widgets/AuthStatusView';
 import { LocaleSwitcher } from '@/widgets/LocaleSwitcher';
-import { AppShell, Box, Burger, Center, Flex, Group, Stack, Text } from '@mantine/core';
+import { AppShell, Box, Burger, Flex, Group, Image, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { clsx } from 'clsx';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode, useEffect } from 'react';
 import classes from './BaseLayout.module.css';
@@ -93,18 +92,18 @@ const links =
     ]
 
 const Links = () => {
-    return <Flex wrap={'wrap'} gap={10} justify={'center'} align={'center'} py={40} >
+    return <Flex wrap={'wrap'} gap={{ xs: 5, sm: 10 }} justify={'center'} align={'center'} py={40} >
         {links.map(link =>
-            <Center pos={'relative'} w={120} h={120} key={link.href} style={{
-                border: '1px solid var(--mantine-color-gray-3)',
-                borderRadius: 100,
-            }}>
-                <Link style={{
-                    margin: 10,
-                    position: 'relative'
-                }} href={link.href} target='_blank'  >
-                    <Image sizes='(max-width: 768px) 120px, (max-width: 1200px) 100px' width={120} height={120} src={link.img} alt='logo' />
-                </Link></Center>)}
+            <Link key={link.href} style={{
+                position: 'relative',
+                border: '1px solid var(--mantine-color-slate-4)',
+                borderRadius: '100%'
+            }} href={link.href} target='_blank'  >
+                <Image
+                    w={{ xs: 60, sm: 75, md: 100 }}
+                    h={'auto'}
+                    src={link.img} alt='logo' />
+            </Link>)}
     </Flex>
 
 }
