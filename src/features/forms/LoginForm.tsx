@@ -18,7 +18,6 @@ export const LoginForm = () => {
     const t = useTranslations()
     const router = useRouter()
 
-    console.log(window.history)
     const { logged, refetch } = useAuth()
     const { mutate: login, isLoading } = useMutation({
         mutationKey: ["login"],
@@ -29,8 +28,13 @@ export const LoginForm = () => {
             setCookie('refresh', data.refresh)
             setCookie('email', data.email)
             if (logged) logged()
-            router.replace('/')
             if (refetch) refetch()
+
+            switch (data.role) {
+                case 'volunteer': router.replace('/admin/qr/1')
+                    break;
+                default: router.replace('/')
+            }
 
         },
         onError: (e) => {

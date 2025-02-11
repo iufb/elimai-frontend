@@ -1,17 +1,10 @@
 import { backendUrl, customFetch } from "@/shared/api";
 import { getCookie, setCookie } from "cookies-next";
 type LoginResponse = {
-    access: string, refresh: string, email: string, isAdmin: boolean
+    access: string, refresh: string, email: string, isAdmin: boolean, role: string
 }
 export const rLogin = async (body: { email: string; password: string }): Promise<LoginResponse> => {
     return customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
-    // try {
-    //     const loginData = await customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
-    //     const isAdmin = !!(await rIsAdmin(loginData.access))
-    //     return { ...loginData, isAdmin }
-    // } catch (e) {
-    //     throw e
-    // }
 };
 
 export const rIsAdmin = async (token: string) => {

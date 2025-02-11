@@ -9,19 +9,10 @@ import { useState } from "react";
 import { useMutation } from "react-query";
 
 export const QRScanner = () => {
-
-    return <>
-        <Ticket />
-        <Sub />
-    </>
-
-}
-
-const Ticket = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const { id } = useParams()
     const [res, setRes] = useState<{ status: number, message: string } | null>(null)
-    const { mutate: scan, isLoading, isError } = useMutation({
+    const { mutate: scanTicket, isLoading: isLoadingTicket } = useMutation({
         mutationKey: ["scan ticket"],
         mutationFn: rScanTicket,
         onSuccess: (data) => {
@@ -36,36 +27,7 @@ const Ticket = () => {
             }
         }
     })
-    const onScan = (result: IDetectedBarcode[]) => {
-        setRes(null)
-        if (!result[0] && !id) {
-            return;
-        }
-        const code = result[0].rawValue
-        scan({ event_id: id as string, code })
-        console.log(`Event : ${id} -- Code : ${code}`)
-    }
-    return (
-        <>
-            <Modal fullScreen opened={opened} onClose={() => {
-                setRes(null)
-                close()
-            }} title={'QR Сканнер билетов'}>
-                <Stack align="center" >
-                    <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
-                    <ResultView loading={isLoading} result={res} />
-                </Stack>
-            </Modal >
-            <Button w={'100%'} variant="base" onClick={open}> Скан билета
-            </Button>
-        </>
-    );
-}
-const Sub = () => {
-    const [opened, { open, close }] = useDisclosure(false);
-    const { id } = useParams()
-    const [res, setRes] = useState<{ status: number, message: string } | null>(null)
-    const { mutate: scan, isLoading, isError } = useMutation({
+    const { mutate: scanSub, isLoading: isLoadingSub } = useMutation({
         mutationKey: ["scan sub"],
         mutationFn: rScanSub,
         onSuccess: (data) => {
@@ -80,13 +42,22 @@ const Sub = () => {
             }
         }
     })
+
     const onScan = (result: IDetectedBarcode[]) => {
         setRes(null)
         if (!result[0] && !id) {
             return;
         }
         const code = result[0].rawValue
-        scan({ event_id: id as string, code })
+        const type = code.split("-")[0]
+        switch (type) {
+            case 'ticket': scanTicket({ event_id: id as string, code })
+                break;
+            case 'aboniment': scanSub({ event_id: id as string, code })
+                break;
+            default:
+                setRes({ status: 404, message: "Неправильный код билета! Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
+        }
         console.log(`Event : ${id} -- Code : ${code}`)
     }
     return (
@@ -94,18 +65,20 @@ const Sub = () => {
             <Modal fullScreen opened={opened} onClose={() => {
                 setRes(null)
                 close()
-            }} title={'QR Сканнер абонемента'}>
+            }} title={'QR Сканнер'}>
                 <Stack align="center" >
                     <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
-                    <ResultView loading={isLoading} result={res} />
+                    <ResultView loading={isLoadingTicket || isLoadingSub} result={res} />
                 </Stack>
             </Modal >
-            <Button w={'100%'} variant="alert" onClick={open}>
-                Скан абонемента
+            <Button w={'100%'} variant="base" onClick={open}> Скан билета
             </Button>
         </>
     );
+
 }
+
+
 const ResultView = ({ loading, result }: { loading: boolean, result: { status: number, message: string } | null }) => {
     if (loading) {
         return <Loader />

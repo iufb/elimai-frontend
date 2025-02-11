@@ -33,16 +33,15 @@ export const GamesTable = () => {
         return <Box w={'100%'} h={250} pos='relative'><LoadingOverlay loaderProps={{ color: 'elimai.6' }} visible={isLoading} zIndex={1} /></Box>
     }
     if (!games) {
-        return <Center h={250} maw={1200} mx={'auto'}><Alert
+        return <Center px={{ xs: 10, md: 0 }} h={250} maw={1200} mx={'auto'}><Alert
             icon={<CircleX />}
             variant="filled" color="red.4" my={20} title={t('gamesTable.error.title')}
         >
             {t('gamesTable.error.desc')}
         </Alert></Center>
     }
-    if (games.length == 0) return <Center h={250} maw={1200} mx={'auto'}><Alert
-        icon={<AlertTriangle />}
-        variant="filled" color="elimai.4" my={20} title={t('gamesTable.notFound.title')}
+    if (games.length == 0) return <Center px={{ xs: 10, md: 0 }} h={250} maw={1200} mx={'auto'}><Alert
+        icon={<AlertTriangle />} variant="filled" color="elimai.4" my={20} title={t('gamesTable.notFound.title')}
     >
         {t('gamesTable.notFound.desc')}
     </Alert></Center>
@@ -58,9 +57,6 @@ export const GamesTable = () => {
                         router.push('/subscription')
                     }}
                 />
-                {/* <Button w={{ xs: '100%', md: 'auto' }} variant="alert" href={'/subscription'} component={Link}> */}
-                {/*     {t('buy.subBtn')} */}
-                {/* </Button> */}
             </Group>
             <Tabs mx={'auto'} maw={1200} w={'100%'} color={'elimai.6'} defaultValue="first">
                 <Tabs.List grow justify="center" >
