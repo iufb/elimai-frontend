@@ -1,5 +1,5 @@
 'use client'
-import { SelectTicketCount } from "@/features/SelectTicketCount";
+import { SelectTicketCount } from "@/features";
 import { rBuyTicket, rGetTicketsCount } from "@/shared/api/games";
 import { showErrorNotification } from "@/shared/notifications";
 import { Box, Button, Input, Stack, Text } from "@mantine/core";

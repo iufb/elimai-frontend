@@ -1,10 +1,9 @@
 'use client'
-import { AuthProtectedButton } from "@/features";
-import { BuyTicketBtn } from "@/features/BuyTicketBtn";
+import { AuthProtectedButton, BuyTicketBtn } from "@/features";
 import { useRouter } from "@/i18n/routing";
 import { rGetGames } from "@/shared/api/games";
 import { Game, GameStatus } from "@/shared/consts";
-import { SoldInfoView } from "@/widgets/SoldInfoView";
+import { SoldInfoView } from "@/widgets";
 import { Alert, Box, ButtonProps, Center, Group, LoadingOverlay, Stack, Table, Tabs, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { AlertTriangle, CircleX } from "lucide-react";
