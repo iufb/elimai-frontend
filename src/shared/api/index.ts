@@ -43,7 +43,6 @@ export async function customFetch<T>({ returnType = "json", ...params }: CReques
     }
 
     const executeFetch = async () => {
-        console.log(headers)
         return fetch(url, {
             method: params.method,
             body,

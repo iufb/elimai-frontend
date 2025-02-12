@@ -26,7 +26,6 @@ export const BuyTicketForm = ({ gameId, count }: { gameId: number, count: number
         mutationFn: rBuyTicket,
         onSuccess: (data) => {
             const { url } = JSON.parse(data)
-            console.log(data)
             router.push(url)
         },
         onError: (e) => {

@@ -102,7 +102,6 @@ const CreateAdminTicketBtn = ({ game }: { game: Game }) => {
 const GetExcelTicketBtn = ({ game }: { game: Game }) => {
     const { mutate: getExcel, isLoading, isError } = useMutation({
         mutationKey: [`excel ${game.id}`], mutationFn: rGetGameExcel, onSuccess: (data) => {
-            console.log(data)
             const url = window.URL.createObjectURL(data);
             const a = document.createElement("a");
             a.href = url;
@@ -126,7 +125,6 @@ const GetExcelTicketBtn = ({ game }: { game: Game }) => {
 const GetExcelSubBtn = () => {
     const { mutate: getExcel, isLoading, isError } = useMutation({
         mutationKey: [`excel sub`], mutationFn: rGetSubExcel, onSuccess: (data) => {
-            console.log(data)
             const url = window.URL.createObjectURL(data);
             const a = document.createElement("a");
             a.href = url;

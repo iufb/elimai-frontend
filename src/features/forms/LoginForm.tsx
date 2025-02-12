@@ -27,7 +27,6 @@ export const LoginForm = () => {
         mutationKey: ["login"],
         mutationFn: rLogin,
         onSuccess: (data) => {
-            console.log(data)
             setCookie('access', data.access)
             setCookie('refresh', data.refresh)
             setCookie('email', data.email)
@@ -56,7 +55,6 @@ export const LoginForm = () => {
         }
     });
     const onSubmit = (data: LoginDto) => {
-        console.log(data)
         login(data)
         deleteCookie('access')
         deleteCookie('refresh')

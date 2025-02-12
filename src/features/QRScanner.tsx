@@ -56,7 +56,6 @@ export const QRScanner = () => {
             default:
                 setRes({ status: 404, message: "Неправильный код билета! Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
         }
-        console.log(`Event : ${id} -- Code : ${code}`)
     }
     return (
         <>

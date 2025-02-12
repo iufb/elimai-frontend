@@ -42,7 +42,6 @@ export const ConfirmForm = ({ mode, userData }: ConfirmFormProps) => {
 
 
     const verify = () => {
-        console.log(mode, "MODE")
         switch (mode) {
             case 'register': register({ ...userData, code: otp })
                 break;
