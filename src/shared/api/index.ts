@@ -43,7 +43,6 @@ export async function customFetch<T>({ returnType = "json", ...params }: CReques
     }
 
     const executeFetch = async () => {
-        console.log(headers)
         return fetch(url, {
             method: params.method,
             body,
@@ -62,7 +61,8 @@ export async function customFetch<T>({ returnType = "json", ...params }: CReques
         }
         let statusText = ''
         if (isJson) {
-            statusText = (await response.json()).error
+            const errBody = await response.json()
+            statusText = errBody?.error ?? errBody?.detail
         }
 
         throw {

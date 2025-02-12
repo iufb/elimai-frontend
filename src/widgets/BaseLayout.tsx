@@ -2,8 +2,7 @@
 import { AuthProtectedButton } from '@/features';
 import { Link as IntlLink, usePathname, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/shared/context';
-import { AuthStatusView } from '@/widgets/AuthStatusView';
-import { LocaleSwitcher } from '@/widgets/LocaleSwitcher';
+import { AuthStatusView, LocaleSwitcher } from '@/widgets';
 import { AppShell, Box, Burger, Flex, Group, Image, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { clsx } from 'clsx';

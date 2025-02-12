@@ -7,115 +7,85 @@ import { CheckIcon, XIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useMutation } from "react-query";
-
-export const QRScanner = () => {
-
-    return <>
-        <Ticket />
-        <Sub />
-    </>
-
+const resultMsg = {
+    event: "Ваш билет не соответствует текущему матчу. Проверьте информацию на билете или обратитесь в службу поддержки.",
+    scan: "Сканирование успешно! Добро пожаловать на матч.",
+    "not-scan": "Ошибка: данный билет уже использован.",
+    "not-found": "Билет не найден.",
+    volunteer: "Ошибка: проверять билеты могут только волонтеры. Обратитесь к ответственному лицу.",
+    parameter: "Ошибка: предоставленные данные некорректны.",
+    used: "Ошибка: абонемент на данный матч уже использован. Повторный вход невозможен."
 }
-
-const Ticket = () => {
+export const QRScanner = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const { id } = useParams()
     const [res, setRes] = useState<{ status: number, message: string } | null>(null)
-    const { mutate: scan, isLoading, isError } = useMutation({
+    const { mutate: scanTicket, isLoading: isLoadingTicket } = useMutation({
         mutationKey: ["scan ticket"],
         mutationFn: rScanTicket,
         onSuccess: (data) => {
-            setRes({ status: 200, message: "Ваш билет подтвержден. Добро пожаловать на мероприятие!" })
+            setRes({ status: 200, message: resultMsg.scan })
         },
-        onError: (e: { status: number }) => {
-            console.log(e)
-            if (e.status == 403) {
-                setRes({ status: 403, message: "Билет не другой матч" })
-            } else {
-                setRes({ status: 404, message: "Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
-            }
+        onError: (e: { status: number, message: keyof typeof resultMsg }) => {
+            setRes({ status: 400, message: resultMsg[e.message] })
         }
     })
+    const { mutate: scanSub, isLoading: isLoadingSub } = useMutation({
+        mutationKey: ["scan sub"],
+        mutationFn: rScanSub,
+        onSuccess: (data) => {
+            setRes({ status: 200, message: resultMsg.scan })
+        },
+        onError: (e: { message: keyof typeof resultMsg, status: number }) => {
+            setRes({ status: 400, message: resultMsg[e.message] })
+        }
+    })
+
     const onScan = (result: IDetectedBarcode[]) => {
         setRes(null)
         if (!result[0] && !id) {
             return;
         }
         const code = result[0].rawValue
-        scan({ event_id: id as string, code })
-        console.log(`Event : ${id} -- Code : ${code}`)
+        const type = code.split("-")[0]
+        switch (type) {
+            case 'ticket': scanTicket({ event_id: id as string, code })
+                break;
+            case 'aboniment': scanSub({ event_id: id as string, code })
+                break;
+            default:
+                setRes({ status: 404, message: "Неправильный код билета! Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
+        }
     }
     return (
         <>
             <Modal fullScreen opened={opened} onClose={() => {
                 setRes(null)
                 close()
-            }} title={'QR Сканнер билетов'}>
+            }} title={'QR Сканнер'}>
                 <Stack align="center" >
                     <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
-                    <ResultView loading={isLoading} result={res} />
+                    <ResultView loading={isLoadingTicket || isLoadingSub} result={res} />
                 </Stack>
             </Modal >
             <Button w={'100%'} variant="base" onClick={open}> Скан билета
             </Button>
         </>
     );
-}
-const Sub = () => {
-    const [opened, { open, close }] = useDisclosure(false);
-    const { id } = useParams()
-    const [res, setRes] = useState<{ status: number, message: string } | null>(null)
-    const { mutate: scan, isLoading, isError } = useMutation({
-        mutationKey: ["scan sub"],
-        mutationFn: rScanSub,
-        onSuccess: (data) => {
-            setRes({ status: 200, message: "Ваш билет подтвержден. Добро пожаловать на мероприятие!" })
-        },
-        onError: (e: { message: string, status: number }) => {
-            if (e.status == 409) {
-                setRes({ status: 409, message: "Этот абонемент уже был применен для входа на данный матч." })
-            } else {
 
-                setRes({ status: 404, message: "Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
-            }
-        }
-    })
-    const onScan = (result: IDetectedBarcode[]) => {
-        setRes(null)
-        if (!result[0] && !id) {
-            return;
-        }
-        const code = result[0].rawValue
-        scan({ event_id: id as string, code })
-        console.log(`Event : ${id} -- Code : ${code}`)
-    }
-    return (
-        <>
-            <Modal fullScreen opened={opened} onClose={() => {
-                setRes(null)
-                close()
-            }} title={'QR Сканнер абонемента'}>
-                <Stack align="center" >
-                    <Scanner allowMultiple scanDelay={5000} onScan={onScan} />
-                    <ResultView loading={isLoading} result={res} />
-                </Stack>
-            </Modal >
-            <Button w={'100%'} variant="alert" onClick={open}>
-                Скан абонемента
-            </Button>
-        </>
-    );
 }
+
+
 const ResultView = ({ loading, result }: { loading: boolean, result: { status: number, message: string } | null }) => {
     if (loading) {
         return <Loader />
     }
     if (result?.status == 200) {
-        return <Notification withCloseButton={false} color="green" icon={<CheckIcon size={20} />} title="Билет действителен!">
+        return <Notification withCloseButton={false} color="green" icon={<CheckIcon size={20} />} title="Успешно!">
             {result.message}
         </Notification>
     } else if (result !== null) {
-        return <Notification withCloseButton={false} icon={<XIcon size={20} />} color="red" title="Билет недействителен!">
+        return <Notification withCloseButton={false} icon={<XIcon size={20} />} color="red" title="Ошибка!">
             {result.message}
         </Notification>
     } else {

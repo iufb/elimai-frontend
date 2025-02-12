@@ -1,6 +1,6 @@
 'use client'
 import { Ticket } from "@/shared/types";
-import { Center, Loader } from "@mantine/core";
+import { Skeleton } from "@mantine/core";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import QrCode from "qrcode";
@@ -119,10 +119,9 @@ export const TicketsView = ({ type, tickets }: TicketsViewProps) => {
         }
         type == 'ticket' ? showTickets() : showSub()
     }, []);
-    console.log(loading, type)
 
     return <>
-        {loading && <Center mih={200}> <Loader /></Center>}
+        {loading && <Skeleton width={350} height={350 * tickets.length * RATIO} mx={'auto'} />}
         <canvas
             ref={canvasRef}
             width={350}
