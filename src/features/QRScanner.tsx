@@ -3,6 +3,7 @@ import { rScanSub, rScanTicket } from "@/shared/api/games";
 import { Button, Loader, Modal, Notification, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import dayjs from "dayjs";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -26,8 +27,8 @@ export const QRScanner = () => {
         onSuccess: (data) => {
             setRes({ status: 200, message: resultMsg.scan })
         },
-        onError: (e: { status: number, message: keyof typeof resultMsg }) => {
-            setRes({ status: 400, message: resultMsg[e.message] })
+        onError: (e: { status: number, message: keyof typeof resultMsg, time?: string }) => {
+            setRes({ status: 400, message: resultMsg[e.message] + (e.time ? `Время последнего сканирования: ${dayjs(e.time).format("YYYY-MM-DD HH:mm")}` : '') })
         }
     })
     const { mutate: scanSub, isLoading: isLoadingSub } = useMutation({
@@ -36,8 +37,8 @@ export const QRScanner = () => {
         onSuccess: (data) => {
             setRes({ status: 200, message: resultMsg.scan })
         },
-        onError: (e: { message: keyof typeof resultMsg, status: number }) => {
-            setRes({ status: 400, message: resultMsg[e.message] })
+        onError: (e: { message: keyof typeof resultMsg, status: number, time?: string }) => {
+            setRes({ status: 400, message: resultMsg[e.message] + (e.time ? `Время последнего сканирования: ${e.time.replace('+', ' ')}` : '') })
         }
     })
 
@@ -54,7 +55,7 @@ export const QRScanner = () => {
             case 'aboniment': scanSub({ event_id: id as string, code })
                 break;
             default:
-                setRes({ status: 404, message: "Неправильный код билета! Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
+                setRes({ status: 404, message: "Неправильный формат билета! Пожалуйста, проверьте номер билета или свяжитесь с организаторами." })
         }
     }
     return (

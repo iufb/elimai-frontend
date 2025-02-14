@@ -60,14 +60,17 @@ export async function customFetch<T>({ returnType = "json", ...params }: CReques
             return isJson ? response.json() : returnType == 'blob' ? response.blob() : response.text();
         }
         let statusText = ''
+        let time = ''
         if (isJson) {
             const errBody = await response.json()
             statusText = errBody?.error ?? errBody?.detail
+            time = errBody?.time
         }
 
         throw {
             message: statusText,
             status: response.status,
+            time
         };
     };
 
