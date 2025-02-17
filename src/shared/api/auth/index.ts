@@ -6,6 +6,16 @@ type LoginResponse = {
 export const rLogin = async (body: { email: string; password: string }): Promise<LoginResponse> => {
     return customFetch<LoginResponse>({ method: "POST", path: 'login/', body: { json: body } });
 };
+export const rCreateVolunteer = async (body: { email: string; password: string }): Promise<LoginResponse> => {
+    return customFetch<LoginResponse>({ method: "POST", path: 'volunteer/', body: { json: body } });
+};
+export const rGetVolunteers = async (): Promise<{ email: string, password: string }[]> => {
+    return customFetch({ method: "GET", path: 'volunteer/' });
+};
+export const rDeleteVolunteer = async (email: string): Promise<{ message: string }> => {
+    return customFetch({ method: "DELETE", path: `volunteer/`, body: { json: { email } } });
+};
+
 
 export const rIsAdmin = async (token: string) => {
     const url = `${backendUrl}/api/is-admin/`
