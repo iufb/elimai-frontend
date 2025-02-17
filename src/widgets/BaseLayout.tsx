@@ -91,7 +91,7 @@ const links =
     ]
 
 const Links = () => {
-    return <Flex wrap={'wrap'} gap={{ xs: 5, sm: 10 }} justify={'center'} align={'center'} py={40} >
+    return <Flex wrap={'wrap'} gap={{ xs: 5, sm: 10 }} justify={'center'} align={'center'} pb={10} >
         {links.map(link =>
             <Link key={link.href} style={{
                 position: 'relative',

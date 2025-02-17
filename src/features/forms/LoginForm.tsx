@@ -74,7 +74,6 @@ export const LoginForm = () => {
         <Stack px={20} py={10} miw={350} w={'100%'} gap={10} >
             <Title order={3}>{t('auth.login.title')}</Title>
             <TextInput
-                type="email"
                 label={t('auth.email')}
                 error={errors["email"]?.message}
                 {...register("email", { required: t('errors.required') })}
